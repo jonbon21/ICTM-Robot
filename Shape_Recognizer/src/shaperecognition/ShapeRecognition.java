@@ -1,4 +1,4 @@
-package shaperecognition;   //test for github
+package shaperecognition;   //hallo maarten
 
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
