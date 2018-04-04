@@ -14,4 +14,4 @@ public class XYMap {
 		Coordinates object_maxX, object_minX, object_maxY, object_minY;
 		return new Coordinates(, );
 	}
-}
+} // voorbeeld
