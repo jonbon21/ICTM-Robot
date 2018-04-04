@@ -28,7 +28,7 @@ public class Motor extends EV3LargeRegulatedMotor implements Power {
 	}
 
 	public void home() {
-		while (!isHomed) {
+		while (isHomed =! true) {
 			homingBusy = true;
 			System.out.println("Homing " + motorName + " IN PROGRESS");
 			this.setSpeed(homingSpeed);
