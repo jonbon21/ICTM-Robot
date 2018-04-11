@@ -18,9 +18,9 @@ public class Motor extends EV3LargeRegulatedMotor {
 	Boolean homingBusy = false;
 	String motorName = "unknownMotor";
 	int homingSpeed = 60;
-	double mmToDegreesConversion = 1;
+	//double mmToDegreesConversion = 1;
 	
-	public Motor(Port inpPort) {   //double inpNormalMotorCurrent, String inpMotorName,
+	public Motor(Port inpPort, double mmToDegreesConversion) {   //double inpNormalMotorCurrent, String inpMotorName,
 		super(inpPort);
 		//normalMotorCurrent = inpNormalMotorCurrent;
 		//maxMotorCurrentForHoming = overcurrentLimitForHoming*normalMotorCurrent + normalMotorCurrent;
