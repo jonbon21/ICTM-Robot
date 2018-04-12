@@ -16,19 +16,20 @@ public class ShapeRecognition {
 		
 		Button.waitForAnyPress();
 		
-		double xAxis_mmPerDegree = 0.225;
-		double yAxis_mmPerDegree = 0.372222;
-		double zAxis_mmPerDegree= 0.06944444;
-		int maxX = 5; 					//set manually
-		int maxY = 5;					//set manually
+		double xAxis_DegreesPermm = 360.0/81.0;
+		double yAxis_DegreesPermm = 360.0/134.0;
+		double zAxis_DegreesPermm= 360.0/25.0;
+		//set resolution manually:
+		int maxPointsX = 6; 					
+		int maxPointsY = 3;					
 		
 	
-		Motor motorX = new Motor(MotorPort.A, xAxis_mmPerDegree);
-		Motor motorY = new Motor(MotorPort.B, yAxis_mmPerDegree);
+		Motor motorX = new Motor(MotorPort.A, xAxis_DegreesPermm, "motorX");
+		Motor motorY = new Motor(MotorPort.B, yAxis_DegreesPermm, "motorY");
 		ColorSensor    sensor1 = new ColorSensor(SensorPort.S1);
 		EV3TouchSensor eindeloopX = new EV3TouchSensor(SensorPort.S2);
 		EV3TouchSensor eindeloopY = new EV3TouchSensor(SensorPort.S3);
-		XYMap map = new XYMap(maxX, maxY);
+		XYMap map = new XYMap(maxPointsX, maxPointsY);
 			
 		motorX.home(eindeloopX);
 		motorY.home(eindeloopY);

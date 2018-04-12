@@ -16,17 +16,21 @@ import java.lang.Math.*;
 public class Motor extends EV3LargeRegulatedMotor {
 	Boolean isHomed = false;
 	Boolean homingBusy = false;
-	String motorName = "unknownMotor";
+	String motorName;
 	int homingSpeed = 60;
-	//double mmToDegreesConversion = 1;
+	double mmToDegreesConversion;
 	
-	public Motor(Port inpPort, double mmToDegreesConversion) {   //double inpNormalMotorCurrent, String inpMotorName,
+	public Motor(Port inpPort, double Axis_DegreesPermm, String motorName) {   //double inpNormalMotorCurrent, String inpMotorName,
 		super(inpPort);
 		//normalMotorCurrent = inpNormalMotorCurrent;
 		//maxMotorCurrentForHoming = overcurrentLimitForHoming*normalMotorCurrent + normalMotorCurrent;
 		//motorName = inpMotorName;
-		//mmToDegreesConversion = inpMMToDegreesConversion;
+		mmToDegreesConversion = Axis_DegreesPermm;
 		//homingSpeed = (int) (inpHomingSpeed*mmToDegreesConversion); //  degrees/s
+	}
+	
+	public double getConversion() {
+		return mmToDegreesConversion;
 	}
 
 	public void home(EV3TouchSensor eindeloop) {

@@ -8,14 +8,16 @@ import lejos.hardware.Sound;
 
 public class XYMap {
 	Boolean[][] xyMap;
-	public int maxX;
-	public int maxY;
-
+	public int maxPointsX;
+	public int maxPointsY;
+	//maximum x and y-length of physical matrix [in mm]
+	public double maxLengthX = 200.0; 
+	public double maxLengthY = 120.0;
 
 	public XYMap(int X, int Y) {
-		maxX=X;
-		maxY=Y;
-		xyMap = new Boolean[maxX][maxY];
+		maxPointsX=X;
+		maxPointsY=Y;
+		xyMap = new Boolean[maxPointsY][maxPointsX];
 	}
 
 
@@ -23,34 +25,32 @@ public class XYMap {
 		sensor.setColorIdMode();
 		sensor.setFloodLight(false);
 		int homingColor = sensor.getColorID();
-    
-		for(int i=1;i<maxY+1;i++) {
-			for(int j=1;j<maxX+1; j++) {
-				Delay.msDelay(250);
+		int DegreesPerStepX = (int)((maxLengthX/maxPointsX)*motorX.getConversion()); 
+		int DegreesPerStepY = (int)((maxLengthY/maxPointsY)*motorY.getConversion()); 
+		for(int i=0;i<maxPointsY;i++) {
+			for(int j=0;j<maxPointsX; j++) {
+				Delay.msDelay(100);
 				if(sensor.getColorID()== homingColor) {
-					xyMap[i-1][j-1]=false;
+					xyMap[i][j]=false;
+					System.out.print("0");
 				} 
 				else {
-					xyMap[i-1][j-1]=true;
-    			
+					xyMap[i][j]=true;
+					System.out.print("X");
 				}
-				Delay.msDelay(250);
+				Delay.msDelay(100);
 				motorY.setSpeed(90);
-				double k = Math.pow((-1), (i-1));
+				double k = Math.pow((-1), (i));
 				int x = (int) k;
-				motorX.rotate(x*120);
+				motorX.rotate(x*DegreesPerStepX);
 				motorX.stop();
     		
 			}
-			motorY.rotate(60);
+			System.out.println();
+			motorY.rotate(DegreesPerStepY);
 			motorY.stop();      	
 		}
-		for(int i=0; i<maxX;i++) {
-			System.out.println();
-			for(int j=0; j<maxY;j++) {
-				System.out.print("[" + xyMap [i][j] + "]");
-			}
-		}
+
 		// free up motor resources. 
 		motorX.close(); 
 		motorY.close();
