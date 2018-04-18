@@ -11,44 +11,76 @@ import shaperecognition.library.ColorSensor;
 public class ShapeRecognition {
 	public static void main(String[] args) {
 	
+		
+	//***INITIALISATION
+		
 		Button.LEDPattern(4);
 		Sound.beepSequenceUp();
-		System.out.println("Initializing");
+		System.out.println("INITIALISATION in progress");
+
 		
+	//***MAP INIT	
 		
-		double xAxis_DegreesPermm = 360.0/81.0; 	//81 is the circumference of the driving wheel
-		double yAxis_DegreesPermm = 360.0/134.0;	//134 is the circumference of the driving wheel
-		double zAxis_DegreesPermm= 360.0/22.0; 		//25 is the circumference of the driving wheel
-		//set resolution manually:
-		int maxPointsX = 6; 					
-		int maxPointsY = 3;	
+		int pixelDimensionInMM = 5;
+		double maxDistanceXInMM = 200.0; 			//maximum x and y-length of physical matrix [in mm]
+		double maxDistanceYInMM = 120.0;
 		
+		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
+		int yResolution = (int) maxDistanceYInMM/pixelDimensionInMM;	
+		
+		XYMap map = new XYMap(xResolution, yResolution);		
+
+		
+	//***MOTORS INIT
 	
-	
-		Motor motorX = new Motor(MotorPort.A, xAxis_DegreesPermm, "motorX");
-		Motor motorY = new Motor(MotorPort.B, yAxis_DegreesPermm, "motorY");
-		Motor motorZ = new Motor(MotorPort.C, zAxis_DegreesPermm, "motorZ");
+		int xAxisCircumferenceDrivingWheel = 81;  //mm
+		int yAxisCircumferenceDrivingWheel = 134; //mm
+		int zAxisCircumferenceDrivingWheel = 22;  //mm
+		double xAxis_DegreesPerPixel = 360.0/xAxisCircumferenceDrivingWheel; 	//81 is the circumference of the driving wheel
+		double yAxis_DegreesPerPixel = 360.0/yAxisCircumferenceDrivingWheel;	//134 is the circumference of the driving wheel
+		double zAxis_DegreesPerPixel= 360.0/zAxisCircumferenceDrivingWheel; 		//25 is the circumference of the driving wheel
+		
+		
+		Motor motorX = new Motor(MotorPort.A, xAxis_DegreesPerPixel, "MotorX");
+		Motor motorY = new Motor(MotorPort.B, yAxis_DegreesPerPixel, "MotorY");
+		Motor motorZ = new Motor(MotorPort.C, zAxis_DegreesPerPixel, "MotorZ");
+		
+		
+	//***SENSORS INIT
+		
 		ColorSensor    sensor1 = new ColorSensor(SensorPort.S1);
 		EV3TouchSensor eindeloopX = new EV3TouchSensor(SensorPort.S2);
 		EV3TouchSensor eindeloopY = new EV3TouchSensor(SensorPort.S3);
-		XYMap map = new XYMap(maxPointsX, maxPointsY);
-			
+	
+		
+		
+	//***HOMING Routine
 		motorX.home(eindeloopX);
 		motorY.home(eindeloopY);
 		
-
+		
+		
+	//***MAPPING Routine
 		
 		System.out.println("Press any key to start mapping");
 		Button.waitForAnyPress();
+		System.out.println("MAPPING in progress");
 		
 			
 		map.scan(motorX, motorY, sensor1);    
 		
+		
+	//***SHAPE IDENTIFICATION Routine
 		String shape= "triangle";
 		System.out.println("The shape is a " +shape);
+	
 		
+		
+		
+	//***SORTING Routine
 		System.out.println("Press any key to start SORTING");
 		Button.waitForAnyPress();
+		System.out.println("SORTING in progress");
 		
 				
 		switch (shape) {       //triangle = -x direction, semicircle = +x, square = -y, plus-sign = y)
@@ -60,9 +92,15 @@ public class ShapeRecognition {
 				System.out.println("Press any key to start Z AXIS MOVE");
 				Button.waitForAnyPress();
 				
-				motorZ.rotate((int) (-20*zAxis_DegreesPermm));
+				motorZ.rotate((int) (-20*zAxis_DegreesPerPixel));
 				motorZ.stop();
 		}
+		
+		
+	//***END OF PROGRAM	
+		System.out.println("All routines have been executed.");
+		System.out.println("Press any key to start QUIT PROGRAM");
+		Button.waitForAnyPress();
 	}
 	
 }

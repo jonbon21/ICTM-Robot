@@ -10,29 +10,30 @@ import lejos.robotics.SampleProvider;
 
 import java.lang.Math.*;
 
-/* to do: if USsensor is used -> make second constructor with this sensor as parameter, and add extra condition in homing routine
- * double check or only the sensor? only the sensor is probably best*/
 
 public class Motor extends EV3LargeRegulatedMotor {
 	Boolean isHomed = false;
 	Boolean homingBusy = false;
 	String motorName;
-	int homingSpeed = 60;
-	double mmToDegreesConversion;
+	int homingSpeed = 60;		//in degrees/s
+	double degreesPerPixel;
 	
-	public Motor(Port inpPort, double Axis_DegreesPermm, String motorName) {   //double inpNormalMotorCurrent, String inpMotorName,
+	
+	public Motor(Port inpPort, double inpDegreesPerPixel, String motorName) {   //double inpNormalMotorCurrent, String inpMotorName,
 		super(inpPort);
 		//normalMotorCurrent = inpNormalMotorCurrent;
 		//maxMotorCurrentForHoming = overcurrentLimitForHoming*normalMotorCurrent + normalMotorCurrent;
 		//motorName = inpMotorName;
-		mmToDegreesConversion = Axis_DegreesPermm;
+		degreesPerPixel = inpDegreesPerPixel;
 		//homingSpeed = (int) (inpHomingSpeed*mmToDegreesConversion); //  degrees/s
 	}
 	
+	
 	public double getConversion() {
-		return mmToDegreesConversion;
+		return degreesPerPixel;
 	}
 
+	
 	public void home(EV3TouchSensor eindeloop) {
 		SampleProvider sp = eindeloop.getTouchMode();
 		float[] sample = new float[sp.sampleSize()];
@@ -56,5 +57,10 @@ public class Motor extends EV3LargeRegulatedMotor {
 		}
 	}
 	
+	
+	public void rotateTo(int inpPositionInPixels) {
+		this.rotateTo((int) (inpPositionInPixels*degreesPerPixel));
+	}
 
+	
 }
