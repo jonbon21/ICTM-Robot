@@ -38,7 +38,7 @@ public class ShapeRecognition {
 		int zAxisCircumferenceDrivingWheel = 22;  //mm
 		double xAxis_DegreesPerPixel = 360.0/xAxisCircumferenceDrivingWheel; 	//81 is the circumference of the driving wheel
 		double yAxis_DegreesPerPixel = 360.0/yAxisCircumferenceDrivingWheel;	//134 is the circumference of the driving wheel
-		double zAxis_DegreesPerPixel= 360.0/zAxisCircumferenceDrivingWheel; 		//25 is the circumference of the driving wheel
+		double zAxis_DegreesPerPixel= 360.0/zAxisCircumferenceDrivingWheel; 	//25 is the circumference of the driving wheel
 		
 		
 		Motor motorX = new Motor(MotorPort.A, xAxis_DegreesPerPixel, "MotorX");
@@ -53,11 +53,10 @@ public class ShapeRecognition {
 		EV3TouchSensor eindeloopY = new EV3TouchSensor(SensorPort.S3);
 	
 		
-		
 	//***HOMING Routine
+		
 		motorX.home(eindeloopX);
 		motorY.home(eindeloopY);
-		
 		
 		
 	//***MAPPING Routine
@@ -66,15 +65,12 @@ public class ShapeRecognition {
 		Button.waitForAnyPress();
 		System.out.println("MAPPING in progress");
 		
-			
 		map.scan(motorX, motorY, sensor1);    
 		
 		
 	//***SHAPE IDENTIFICATION Routine
 		String shape= "triangle";
 		System.out.println("The shape is a " +shape);
-	
-		
 		
 		
 	//***SORTING Routine
@@ -82,11 +78,8 @@ public class ShapeRecognition {
 		Button.waitForAnyPress();
 		System.out.println("SORTING in progress");
 		
-				
 		switch (shape) {       //triangle = -x direction, semicircle = +x, square = -y, plus-sign = y)
 			case "triangle" :
-				System.out.println(motorX.getTachoCount());
-				System.out.println(motorY.getTachoCount());
 				map.moveTo(0,0, motorX, motorY);
 				
 				System.out.println("Press any key to start Z AXIS MOVE");
