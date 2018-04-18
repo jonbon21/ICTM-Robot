@@ -33,10 +33,7 @@ public class Motor extends EV3LargeRegulatedMotor {
 		return degreesPerPixel;
 	}
 
-<<<<<<< HEAD
-	public void home() {
-		while (isHomed =! true) {
-=======
+
 	
 	public void home(EV3TouchSensor eindeloop) {
 		SampleProvider sp = eindeloop.getTouchMode();
@@ -46,7 +43,7 @@ public class Motor extends EV3LargeRegulatedMotor {
 		
 		while (!isHomed) {
 		
->>>>>>> Homing
+
 			homingBusy = true;
 		
 		    sp.fetchSample(sample, 0);
