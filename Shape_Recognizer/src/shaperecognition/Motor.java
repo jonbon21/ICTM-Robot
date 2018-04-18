@@ -7,6 +7,7 @@ import lejos.hardware.motor.*;
 import lejos.hardware.port.*;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 
 import java.lang.Math.*;
 
@@ -16,7 +17,7 @@ public class Motor extends EV3LargeRegulatedMotor {
 	Boolean homingBusy = false;
 	String motorName;
 	int homingSpeed = 60;		//in degrees/s
-	double degreesPerPixel;
+	double degreesPerActUnit;
 	
 	
 	public Motor(Port inpPort, double inpDegreesPerPixel, String motorName) {   //double inpNormalMotorCurrent, String inpMotorName,
@@ -24,13 +25,13 @@ public class Motor extends EV3LargeRegulatedMotor {
 		//normalMotorCurrent = inpNormalMotorCurrent;
 		//maxMotorCurrentForHoming = overcurrentLimitForHoming*normalMotorCurrent + normalMotorCurrent;
 		//motorName = inpMotorName;
-		degreesPerPixel = inpDegreesPerPixel;
+		degreesPerActUnit = inpDegreesPerPixel;
 		//homingSpeed = (int) (inpHomingSpeed*mmToDegreesConversion); //  degrees/s
 	}
 	
 	
 	public double getConversion() {
-		return degreesPerPixel;
+		return degreesPerActUnit;
 	}
 
 	public void home() {
@@ -68,8 +69,14 @@ public class Motor extends EV3LargeRegulatedMotor {
 	}
 	
 	
-	public void rotateTo(int inpPositionInPixels) {
-		this.rotateTo((int) (inpPositionInPixels*degreesPerPixel));
+	public void rotateTo(int inpPositionInActUnits) {
+		System.out.println("In RotateTo routine");
+		System.out.println("PositionInActUnits = " + '\n' + inpPositionInActUnits);
+		System.out.println("DegreesPerActUnit = "  + '\n' + degreesPerActUnit);
+		Delay.msDelay(5000);
+		
+		
+		super.rotateTo((int) (inpPositionInActUnits*degreesPerActUnit));
 	}
 
 	

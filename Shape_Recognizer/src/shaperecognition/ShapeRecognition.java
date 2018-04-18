@@ -1,9 +1,14 @@
 package shaperecognition;  
 
+import lejos.hardware.Brick;
+import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.lcd.Font;
+import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.utility.Delay;
 import lejos.hardware.port.*;
 import lejos.hardware.motor.*;
 import shaperecognition.library.ColorSensor;
@@ -16,12 +21,14 @@ public class ShapeRecognition {
 		
 		Button.LEDPattern(4);
 		Sound.beepSequenceUp();
+		Brick		brick = BrickFinder.getLocal();
+		TextLCD		lcd = brick.getTextLCD(Font.getFont(0, 0, Font.SIZE_MEDIUM));
 		System.out.println("INITIALISATION in progress");
 
 		
 	//***MAP INIT	
 		
-		int pixelDimensionInMM = 5;
+		int pixelDimensionInMM = 5;					//defines a square pixel of x by x
 		double maxDistanceXInMM = 200.0; 			//maximum x and y-length of physical matrix [in mm]
 		double maxDistanceYInMM = 120.0;
 		double maxDistanceZInMM = 35.0;
@@ -37,10 +44,15 @@ public class ShapeRecognition {
 	
 		int xAxisCircumferenceDrivingWheel = 81;  //mm
 		int yAxisCircumferenceDrivingWheel = 134; //mm
-		int zAxisCircumferenceDrivingWheel = 22;  //mm
-		double xAxis_DegreesPerPixel = 360.0/xAxisCircumferenceDrivingWheel; 	//81 is the circumference of the driving wheel
-		double yAxis_DegreesPerPixel = 360.0/yAxisCircumferenceDrivingWheel;	//134 is the circumference of the driving wheel
-		double zAxis_DegreesPerMM= 360.0/zAxisCircumferenceDrivingWheel; 	//25 is the circumference of the driving wheel
+		int zAxisCircumferenceDrivingWheel = 20;  //mm
+		
+		double xAxis_DegreesPerMM = 360.0/xAxisCircumferenceDrivingWheel;
+		double yAxis_DegreesPerMM = 360.0/yAxisCircumferenceDrivingWheel;
+		double zAxis_DegreesPerMM= 360.0/zAxisCircumferenceDrivingWheel;
+		
+		double xAxis_DegreesPerPixel = xAxis_DegreesPerMM/pixelDimensionInMM;
+		double yAxis_DegreesPerPixel = yAxis_DegreesPerMM/pixelDimensionInMM;
+		
 		
 		
 		Motor motorX = new Motor(MotorPort.A, xAxis_DegreesPerPixel, "MotorX");
@@ -68,8 +80,19 @@ public class ShapeRecognition {
 		
 		System.out.println("Press any key to start mapping");
 		Button.waitForAnyPress();
+		lcd.clear();
+		lcd.refresh();
 		System.out.println("MAPPING in progress");
-		motorZ.rotateTo((int)(maxDistanceZInMM-scanningSensorHeight));
+		
+		int zScanHeight = (int) (-(maxDistanceZInMM-scanningSensorHeight));
+		System.out.println("Scanheight = " + '\n' + zScanHeight);
+		
+		Delay.msDelay(5000);
+		Button.waitForAnyPress();
+		
+		motorZ.rotateTo(zScanHeight);
+		
+		System.out.println("Scanheight is SET");
 		
 		map.scan(motorX, motorY, sensor1);    
 		
