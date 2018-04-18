@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class AM{
-
+//test 
 	public static void main(String [] args) {
 		//vb sensor output
 		int  [][] scanmap = new int[7][7];
