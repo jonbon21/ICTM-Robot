@@ -24,12 +24,14 @@ public class ShapeRecognition {
 		int pixelDimensionInMM = 5;
 		double maxDistanceXInMM = 200.0; 			//maximum x and y-length of physical matrix [in mm]
 		double maxDistanceYInMM = 120.0;
+		double maxDistanceZInMM = 35.0;
 		
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
 		int yResolution = (int) maxDistanceYInMM/pixelDimensionInMM;	
 		
 		XYMap map = new XYMap(xResolution, yResolution);		
 
+		int scanningSensorHeight = 10;
 		
 	//***MOTORS INIT
 	
@@ -38,12 +40,12 @@ public class ShapeRecognition {
 		int zAxisCircumferenceDrivingWheel = 22;  //mm
 		double xAxis_DegreesPerPixel = 360.0/xAxisCircumferenceDrivingWheel; 	//81 is the circumference of the driving wheel
 		double yAxis_DegreesPerPixel = 360.0/yAxisCircumferenceDrivingWheel;	//134 is the circumference of the driving wheel
-		double zAxis_DegreesPerPixel= 360.0/zAxisCircumferenceDrivingWheel; 	//25 is the circumference of the driving wheel
+		double zAxis_DegreesPerMM= 360.0/zAxisCircumferenceDrivingWheel; 	//25 is the circumference of the driving wheel
 		
 		
 		Motor motorX = new Motor(MotorPort.A, xAxis_DegreesPerPixel, "MotorX");
 		Motor motorY = new Motor(MotorPort.B, yAxis_DegreesPerPixel, "MotorY");
-		Motor motorZ = new Motor(MotorPort.C, zAxis_DegreesPerPixel, "MotorZ");
+		Motor motorZ = new Motor(MotorPort.C, zAxis_DegreesPerMM, "MotorZ");
 		
 		
 	//***SENSORS INIT
@@ -67,6 +69,7 @@ public class ShapeRecognition {
 		System.out.println("Press any key to start mapping");
 		Button.waitForAnyPress();
 		System.out.println("MAPPING in progress");
+		motorZ.rotateTo((int)(maxDistanceZInMM-scanningSensorHeight));
 		
 		map.scan(motorX, motorY, sensor1);    
 		
@@ -88,7 +91,7 @@ public class ShapeRecognition {
 				System.out.println("Press any key to start Z AXIS MOVE");
 				Button.waitForAnyPress();
 				
-				motorZ.rotate((int) (-20*zAxis_DegreesPerPixel));
+				motorZ.rotate((int) (-20*zAxis_DegreesPerMM));
 				motorZ.stop();
 		}
 		
