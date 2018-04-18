@@ -58,4 +58,14 @@ public class XYMap {
 		Sound.beepSequence(); // we are done.
   
 	} 
+	
+public void moveTo(int mapPosX, int mapPosY, Motor x, Motor y) {
+		int DegreesPerStepX = (int)((maxLengthX/maxPointsX)*x.getConversion()); 
+		int DegreesPerStepY = (int)((maxLengthY/maxPointsY)*y.getConversion());
+		System.out.println("Y Conversion constant:" + DegreesPerStepY);
+		x.rotateTo(DegreesPerStepX*mapPosX);
+		System.out.println("X move done");
+		y.rotateTo(DegreesPerStepY*mapPosY);
+		System.out.println("Y move done");
+	}
 }

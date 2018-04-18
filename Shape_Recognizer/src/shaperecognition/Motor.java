@@ -49,10 +49,12 @@ public class Motor extends EV3LargeRegulatedMotor {
       	  	
 	        if (sample[0] >0) {
 	        	 this.stop();
+	        	 this.resetTachoCount();
 	        	 isHomed=true;
 	        	 System.out.println("Homing " + motorName + " DONE");
 	         }
 		}
 	}
+	
 
 }
