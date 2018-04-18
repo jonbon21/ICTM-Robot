@@ -58,6 +58,9 @@ public class ShapeRecognition {
 		motorX.home(eindeloopX);
 		motorY.home(eindeloopY);
 		
+		System.out.println("Put the Z-axis in the fully upward position." + '\n' + "Press any button to continue homing Z axis.");
+		Button.waitForAnyPress();
+		motorY.home();
 		
 	//***MAPPING Routine
 		
