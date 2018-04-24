@@ -20,6 +20,10 @@ public class XYMap {
 
 	public void scan(Motor motorX, Motor motorY, ColorSensor sensor) {
 		
+		System.out.println("xResolution " + xResolution);
+		System.out.println("yResolution " + yResolution);
+		Button.waitForAnyPress();
+		
 		//SENSOR SETUP
 		sensor.setColorIdMode();
 		sensor.setFloodLight(false);
@@ -28,27 +32,35 @@ public class XYMap {
 		//SCANNING
 		for(int i=0;i<yResolution;i++) {
 			
-			motorY.setSpeed(90);
-			motorY.rotateTo(i);
-			//motorY.stop(); 
+			Delay.msDelay(100);
+			motorX.goTo(0);
+			motorY.goTo(i);
+			Delay.msDelay(2000);
+			System.out.println();
 			
 			for(int j=0;j<xResolution; j++) {
+								
+				//double k = Math.pow((-1), (i));
+					Delay.msDelay(100);
+					motorX.goTo(j);
+					
 				
-				Delay.msDelay(100);
-				motorX.setSpeed(90);
-				double k = Math.pow((-1), (i));
-				if (k>0) {
-				motorX.rotateTo(j);
-				} else {
-				motorX.rotateTo(xResolution-j);
-				}
+				/*else {
+					motorX.setSpeed(90);
+					Delay.msDelay(100);
+					
+					motorX.goTo(xResolution-1-j);
+					Delay.msDelay(2000);
+				}*/
 				//motorX.stop();
 				
 				Delay.msDelay(100);
 				if(sensor.getColorID()== homingColor) {
 					xyMap[i][j]=false;
 					System.out.print("0");
-				} else {
+				} 
+				
+				else {
 					xyMap[i][j]=true;
 					System.out.print("X");
 				}
@@ -60,7 +72,6 @@ public class XYMap {
 		//END SCANNING
 		motorX.close();			//free up motor resources 
 		motorY.close();
-		Button.waitForAnyPress();
 		Sound.beepSequence(); 
   
 	} 

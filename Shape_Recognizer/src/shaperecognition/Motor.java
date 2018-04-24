@@ -16,16 +16,16 @@ public class Motor extends EV3LargeRegulatedMotor {
 	Boolean isHomed = false;
 	Boolean homingBusy = false;
 	String motorName;
-	int homingSpeed = 60;		//in degrees/s
+	int homingSpeed = 80;		//in degrees/s
 	double degreesPerActUnit;
 	
 	
-	public Motor(Port inpPort, double inpDegreesPerPixel, String motorName) {   //double inpNormalMotorCurrent, String inpMotorName,
+	public Motor(Port inpPort, double inpDegreesPerActUnit, String motorName) {   //double inpNormalMotorCurrent, String inpMotorName,
 		super(inpPort);
 		//normalMotorCurrent = inpNormalMotorCurrent;
 		//maxMotorCurrentForHoming = overcurrentLimitForHoming*normalMotorCurrent + normalMotorCurrent;
 		//motorName = inpMotorName;
-		degreesPerActUnit = inpDegreesPerPixel;
+		degreesPerActUnit = inpDegreesPerActUnit;
 		//homingSpeed = (int) (inpHomingSpeed*mmToDegreesConversion); //  degrees/s
 	}
 	
@@ -69,14 +69,11 @@ public class Motor extends EV3LargeRegulatedMotor {
 	}
 	
 	
-	public void rotateTo(int inpPositionInActUnits) {
-		System.out.println("In RotateTo routine");
-		System.out.println("PositionInActUnits = " + '\n' + inpPositionInActUnits);
-		System.out.println("DegreesPerActUnit = "  + '\n' + degreesPerActUnit);
-		Delay.msDelay(5000);
-		
-		
-		super.rotateTo((int) (inpPositionInActUnits*degreesPerActUnit));
+	public void goTo(int inpPositionInActUnits) {
+		int absolutePosInDegrees = (int) (inpPositionInActUnits*degreesPerActUnit);
+		this.setSpeed(100);
+		Delay.msDelay(200);
+		super.rotateTo(absolutePosInDegrees);
 	}
 
 	
