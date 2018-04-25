@@ -19,7 +19,7 @@ public class Motor extends EV3LargeRegulatedMotor {
 	int homingSpeed = 80;		//in degrees/s
 	double degreesPerActUnit;
 	
-	
+
 	public Motor(Port inpPort, double inpDegreesPerActUnit, String motorName) {   //double inpNormalMotorCurrent, String inpMotorName,
 		super(inpPort);
 		//normalMotorCurrent = inpNormalMotorCurrent;
@@ -68,11 +68,16 @@ public class Motor extends EV3LargeRegulatedMotor {
 		}
 	}
 	
+
+	
+	
+
+	
 	
 	public void goTo(int inpPositionInActUnits) {
 		int absolutePosInDegrees = (int) (inpPositionInActUnits*degreesPerActUnit);
-		this.setSpeed(100);
-		Delay.msDelay(200);
+		this.setSpeed(120);
+		Delay.msDelay(100);
 		super.rotateTo(absolutePosInDegrees);
 	}
 

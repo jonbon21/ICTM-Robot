@@ -7,14 +7,14 @@ import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
 public class XYMap {
-	Boolean[][] xyMap;
+	int[][] xyMap;
 	public int xResolution;
 	public int yResolution;
 
 	public XYMap(int inpXRes, int inpYRes) {
 		xResolution=inpXRes;
 		yResolution=inpYRes;
-		xyMap = new Boolean[yResolution][xResolution];
+		xyMap = new int[yResolution][xResolution];
 	}
 
 
@@ -56,12 +56,12 @@ public class XYMap {
 				
 				Delay.msDelay(100);
 				if(sensor.getColorID()== homingColor) {
-					xyMap[i][j]=false;
+					xyMap[i][j]=0;
 					System.out.print("0");
 				} 
 				
 				else {
-					xyMap[i][j]=true;
+					xyMap[i][j]=1;
 					System.out.print("X");
 				}
 				
@@ -76,12 +76,4 @@ public class XYMap {
   
 	} 
 	
-		public void moveTo(int mapPosX, int mapPosY, Motor x, Motor y) {
-			
-			x.rotateTo(mapPosX);
-			System.out.println("X move done");
-			
-			y.rotateTo(mapPosY);
-			System.out.println("Y move done");
-	}
 }

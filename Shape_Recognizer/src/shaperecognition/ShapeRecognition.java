@@ -1,5 +1,7 @@
 package shaperecognition;  
 
+import java.rmi.RemoteException;
+
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
@@ -28,7 +30,7 @@ public class ShapeRecognition {
 		
 	//***MAP INIT	
 		
-		int pixelDimensionInMM = 20;					//defines a square pixel of x by x
+		int pixelDimensionInMM = 5;					//defines a square pixel of x by x
 		double maxDistanceXInMM = 200.0; 			//maximum x and y-length of physical matrix [in mm]
 		double maxDistanceYInMM = 120.0;
 		double maxDistanceZInMM = 32.0;
@@ -38,7 +40,7 @@ public class ShapeRecognition {
 		
 		XYMap map = new XYMap(xResolution, yResolution);		
 
-		int scanningSensorHeight = 10;
+		int scanningSensorHeight = 5;
 		
 	//***MOTORS INIT
 	
@@ -54,16 +56,16 @@ public class ShapeRecognition {
 		
 		
 		
-		Motor motorX = new Motor(MotorPort.A, xAxis_DegreesPerPixel, "MotorX");
-		Motor motorY = new Motor(MotorPort.B, yAxis_DegreesPerPixel, "MotorY");
-		Motor motorZ = new Motor(MotorPort.C, zAxis_DegreesPerMM, "MotorZ");
+		final Motor motorX = new Motor(MotorPort.A, xAxis_DegreesPerPixel, "MotorX");
+		final Motor motorY = new Motor(MotorPort.B, yAxis_DegreesPerPixel, "MotorY");
+		final Motor motorZ = new Motor(MotorPort.C, zAxis_DegreesPerMM, "MotorZ");
 		
 		
 	//***SENSORS INIT
 		
 		ColorSensor    sensor1 = new ColorSensor(SensorPort.S1);
-		EV3TouchSensor eindeloopX = new EV3TouchSensor(SensorPort.S2);
-		EV3TouchSensor eindeloopY = new EV3TouchSensor(SensorPort.S3);
+		final EV3TouchSensor eindeloopX = new EV3TouchSensor(SensorPort.S2);
+		final EV3TouchSensor eindeloopY = new EV3TouchSensor(SensorPort.S3);
 	
 		
 	//***HOMING Routine
@@ -74,12 +76,21 @@ public class ShapeRecognition {
 		Button.waitForAnyPress();
 		motorZ.home();
 		
-		motorX.home(eindeloopX);
-		motorY.home(eindeloopY);
-		
-		
-		
-		
+			Thread homeX = new Thread() {
+				public void run() {
+						motorX.home(eindeloopX);
+					
+				}
+			};
+				
+			Thread homeY = new Thread() {
+				public void run() {
+						motorY.home(eindeloopY);
+				}
+			};
+			
+			homeX.start();
+			homeY.start();	
 		
 	//***MAPPING Routine
 	
@@ -116,12 +127,13 @@ public class ShapeRecognition {
 		
 		switch (shape) {       //triangle = -x direction, semicircle = +x, square = -y, plus-sign = y)
 			case "triangle" :
-				map.moveTo(0,0, motorX, motorY);
+				motorX.goTo(0);
+				motorY.goTo(0);
 				
 				System.out.println("Press any key to start Z AXIS MOVE");
 				Button.waitForAnyPress();
 				
-				motorZ.rotate((int) (-20*zAxis_DegreesPerMM));
+				
 				motorZ.stop();
 		}
 		
