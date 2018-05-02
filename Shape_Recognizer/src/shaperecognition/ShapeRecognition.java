@@ -1,6 +1,7 @@
 package shaperecognition;  
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
@@ -38,7 +39,7 @@ public class ShapeRecognition {
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
 		int yResolution = (int) maxDistanceYInMM/pixelDimensionInMM;	
 		
-		XYMap map = new XYMap(xResolution, yResolution);		
+		XYMap map = new XYMap(xResolution, yResolution);
 
 		int scanningSensorHeight = 5;
 		
@@ -91,6 +92,27 @@ public class ShapeRecognition {
 			
 			homeX.start();
 			homeY.start();	
+
+			
+	//***EDGE TRACKING Routine
+			
+		System.out.println("Press any key to start edge tracking");
+		Button.waitForAnyPress();	
+		Coordinates a = new Coordinates(5,5);
+		Coordinates b = new Coordinates(20,20);
+		Coordinates c = new Coordinates(20,5);
+		
+		sensor1.setFloodLight(true);
+		
+		ArrayList<Coordinates> corners = new ArrayList<Coordinates>();
+		corners.add(a);
+		corners.add(b);
+		corners.add(c);
+		
+		map.trackTriangle(motorX, motorY, corners);
+		
+		System.out.println("Edge Tracking DONE");
+		Button.waitForAnyPress();
 		
 	//***MAPPING Routine
 	
@@ -103,8 +125,7 @@ public class ShapeRecognition {
 		System.out.println("MAPPING in progress");
 		
 		int zScanHeight = (int) (-(maxDistanceZInMM-scanningSensorHeight));
-		motorZ.setSpeed(90);
-		motorZ.goTo(zScanHeight);
+		motorZ.goTo(zScanHeight, 20);
 		
 		System.out.println("Scanheight is SET");
 		
@@ -118,6 +139,9 @@ public class ShapeRecognition {
 		
 		String shape= "triangle";
 		System.out.println("The shape is a " +shape);
+	
+		
+
 		
 		
 	//***SORTING Routine
@@ -127,8 +151,8 @@ public class ShapeRecognition {
 		
 		switch (shape) {       //triangle = -x direction, semicircle = +x, square = -y, plus-sign = y)
 			case "triangle" :
-				motorX.goTo(0);
-				motorY.goTo(0);
+				motorX.goTo(0,4);
+				motorY.goTo(0,4);
 				
 				System.out.println("Press any key to start Z AXIS MOVE");
 				Button.waitForAnyPress();
