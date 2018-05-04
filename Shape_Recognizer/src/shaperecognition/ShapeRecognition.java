@@ -92,30 +92,23 @@ public class ShapeRecognition {
 			
 			homeX.start();
 			homeY.start();	
+			try {
+				homeX.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			try {
+				homeY.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-			
-	//***EDGE TRACKING Routine
-			
-		System.out.println("Press any key to start edge tracking");
-		Button.waitForAnyPress();	
-		Coordinates a = new Coordinates(5,5);
-		Coordinates b = new Coordinates(20,20);
-		Coordinates c = new Coordinates(20,5);
-		
-		sensor1.setFloodLight(true);
-		
-		ArrayList<Coordinates> corners = new ArrayList<Coordinates>();
-		corners.add(a);
-		corners.add(b);
-		corners.add(c);
-		
-		map.trackTriangle(motorX, motorY, corners);
-		
-		System.out.println("Edge Tracking DONE");
-		Button.waitForAnyPress();
 		
 	//***MAPPING Routine
-	
+	/*
 		lcd.clear();
 		lcd.refresh();
 		System.out.println("Press any key to start MAPPING");
@@ -129,42 +122,88 @@ public class ShapeRecognition {
 		
 		System.out.println("Scanheight is SET");
 		
-		map.scan(motorX, motorY, sensor1);    
-		
+		map.scan(motorX, motorY, sensor1);   
+		motorZ.rotateTo(0); 
+	*/	
 		
 	//***SHAPE IDENTIFICATION Routine
-		
+		lcd.clear();
+		lcd.refresh();
 		System.out.println("Press any key to start identification");
 		Button.waitForAnyPress();		
 		
-		String shape= "triangle";
+		String shape= "square";
 		System.out.println("The shape is a " +shape);
-	
 		
-
+	//***Creating a simulation ArrayList with the corners of the shapes	
+		Coordinates a = new Coordinates(20,5);
+		Coordinates b = new Coordinates(20,20);
+		Coordinates c = new Coordinates(5,20);
+		Coordinates d = new Coordinates(5,5);
+		//Coordinates e = new Coordinates(5,20);
 		
+		ArrayList<Coordinates> corners = new ArrayList<Coordinates>(); //deze krijgen we normaal mee vanuit de shape-identification
 		
-	//***SORTING Routine
-		System.out.println("Press any key to start SORTING");
+		corners.add(a);
+		corners.add(b);
+		corners.add(c);
+		corners.add(d);
+		//corners.add(e);
+		
+	//***EDGE TRACKING + SORTING Routine
+		lcd.clear();
+		lcd.refresh();
+		System.out.println("Press any key to start EDGE TRACKING");
 		Button.waitForAnyPress();
-		System.out.println("SORTING in progress");
 		
-		switch (shape) {       //triangle = -x direction, semicircle = +x, square = -y, plus-sign = y)
+		switch (shape) {       //triangle = -x direction, square = +x, plus-sign = y)
 			case "triangle" :
-				motorX.goTo(0,4);
-				motorY.goTo(0,4);
+				sensor1.setFloodLight(true);
+				map.trackTriangle(motorX, motorY, corners);
+				sensor1.setFloodLight(false);
 				
-				System.out.println("Press any key to start Z AXIS MOVE");
+				System.out.println("Press to start SORTING");
 				Button.waitForAnyPress();
+				map.sortTriangle(motorX, motorY, motorZ, corners);
+				break;
 				
+			case "square" : 
+				sensor1.setFloodLight(true);
+				map.trackSquare(motorX, motorY, corners);
+				sensor1.setFloodLight(false);
 				
-				motorZ.stop();
+				System.out.println("Press to start SORTING");
+				Button.waitForAnyPress();
+				map.sortSquare(motorX, motorY, motorZ, corners);
+				break;
+				
+			case "cross" : 
+				sensor1.setFloodLight(true);
+				map.trackCross(motorX, motorY, corners);
+				sensor1.setFloodLight(false);
+				
+				System.out.println("Press to start SORTING");
+				Button.waitForAnyPress();
+				map.sortCross(motorX, motorY, motorZ, corners);
+				break;
+				
+			case "semicircle" : 
+				sensor1.setFloodLight(true);
+				map.trackSemicircle(motorX, motorY, corners);
+				sensor1.setFloodLight(false);
+				
+				System.out.println("Press to start SORTING");
+				Button.waitForAnyPress();
+				map.sortSemicircle(motorX, motorY, motorZ, corners);
+				break;
 		}
 		
 		
 	//***END OF PROGRAM	
+		lcd.clear();
+		lcd.refresh();
 		System.out.println("All routines have been executed.");
-		System.out.println("Press any key to start QUIT PROGRAM");
+		System.out.println("Press to QUIT PROGRAM");
 		Button.waitForAnyPress();
 	}
 	

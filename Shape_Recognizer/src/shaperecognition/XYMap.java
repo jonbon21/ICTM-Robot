@@ -21,7 +21,6 @@ public class XYMap {
 		xyMap = new int[yResolution][xResolution];
 	}
 
-
 	public void scan(Motor motorX, Motor motorY, ColorSensor sensor) {
 		
 		System.out.println("xResolution " + xResolution);
@@ -79,11 +78,7 @@ public class XYMap {
 		Sound.beepSequence(); 
   
 	} 
-	
-	
-	
-	
-	
+
 	public void trackTriangle(final Motor motorX, final Motor motorY, ArrayList <Coordinates> corners){
 		final Coordinates a,b,c;
 		final int speedInPixelsPerS = 4;
@@ -119,8 +114,8 @@ public class XYMap {
 		final int speedXBA = (int) Math.abs((distanceXBA/motionTimeBA));  
 		final int speedYBA = (int) Math.abs((distanceYBA/motionTimeBA));
 		
-		final int speedXCB = (int) Math.abs((distanceXBA/motionTimeCB));  
-		final int speedYCB = (int) Math.abs((distanceYBA/motionTimeCB));
+		final int speedXCB = (int) Math.abs((distanceXCB/motionTimeCB));  
+		final int speedYCB = (int) Math.abs((distanceYCB/motionTimeCB));
 		
 		final int speedXAC = (int) Math.abs((distanceXAC/motionTimeAC));  
 		final int speedYAC = (int) Math.abs((distanceYAC/motionTimeAC));
@@ -129,10 +124,7 @@ public class XYMap {
 		
 		System.out.println("Tracking Triangle");
 
-		
-		
 	// go to first point 	
-		
 		Thread trackTriangleXPointA = new Thread() {
 			public void run() {
 					motorX.goTo(a.getX(), 4);		
@@ -164,12 +156,64 @@ public class XYMap {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
+		Delay.msDelay(2000);
 		
-		System.out.println("Sensor in point A");
-		
-		
+	// cycle through the other points
+		for(int i=0;i<2; i++) {			
+			final Coordinates k,l;
+			double motionTime = 0;
+			
+			k = corners.get(i);
+			l = corners.get(i+1);
+			
+			double distanceX = Math.abs(l.getX() - k.getX());
+			double distanceY = Math.abs(l.getY() - k.getY());
+			
+			double distanceBetweenPoints = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+			
+			motionTime = distanceBetweenPoints/speedInPixelsPerS;
+			
+			final int speedX = (int) Math.abs((distanceX/motionTime));  
+			final int speedY = (int) Math.abs((distanceY/motionTime));
+			
+			Thread trackTriangleXPoint = new Thread() {
+				public void run() {
+						motorX.goTo(l.getX(), speedX);	
+				}
+			};
+			
+			
+			Thread trackTriangleYPoint = new Thread() {
+				public void run() {
+					motorY.goTo(l.getY(), speedY);
+				}
+			};
+			
+			trackTriangleXPoint.start();
+			trackTriangleYPoint.start();
+			
+			
+			
+					//wait for this movement to finish
+						try {
+							trackTriangleXPoint.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						try {
+							trackTriangleYPoint.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}			
+			
+			
+		}		
 	
-		
+	/*	
 	// track first edge
 		
 		Thread trackTriangleXPointB = new Thread() {
@@ -213,14 +257,14 @@ public class XYMap {
 		
 		Thread trackTriangleXPointC = new Thread() {
 			public void run() {
-					motorX.goTo(b.getX(), speedXCB);	
+					motorX.goTo(c.getX(), speedXCB);	
 			}
 		};
 		
 		
 		Thread trackTriangleYPointC = new Thread() {
 			public void run() {
-				motorY.goTo(b.getY(), speedYCB);
+				motorY.goTo(c.getY(), speedYCB);
 			}
 		};
 		
@@ -250,9 +294,8 @@ public class XYMap {
 					
 					
 					
-					
-		// track third edge (go back to start point) 	
-					
+		*/			
+		// track third edge (go back to start point)			
 		Thread trackTriangleXPointAReturn = new Thread() {
 			public void run() {
 					motorX.goTo(a.getX(), speedXAC);		
@@ -285,13 +328,672 @@ public class XYMap {
 						e.printStackTrace();
 					}
 		
-		System.out.println("Sensor back in point A");
 		
-		
-				
-								
-
 }
 	
+	public void trackSquare(final Motor motorX, final Motor motorY, ArrayList <Coordinates> corners){
+		final Coordinates a,b,c,d;
+		final int speedInPixelsPerS = 4;
 	
+		double motionTimeAD = 0;
+		
+		a = corners.get(0);
+		b = corners.get(1);
+		c = corners.get(2);
+		d = corners.get(3);
+		
+		double distanceXAD = Math.abs(a.getX() - d.getX());
+		double distanceYAD = Math.abs(a.getY() - d.getY());
+		
+		double distanceBetweenPointsAD = Math.sqrt(Math.pow(distanceXAD, 2) + Math.pow(distanceYAD, 2));
+		
+		motionTimeAD = distanceBetweenPointsAD/speedInPixelsPerS;
+		
+		final int speedXAD = (int) Math.abs((distanceXAD/motionTimeAD));  
+		final int speedYAD = (int) Math.abs((distanceYAD/motionTimeAD));
+		
+		System.out.println("Tracking Square");
+
+	// go to first point 	
+		System.out.println("Press to go to first point");
+		Button.waitForAnyPress();
+		Thread trackXPointA = new Thread() {
+			public void run() {
+					motorX.goTo(a.getX(), 4);		
+			}
+		};
+		
+		
+		Thread trackYPointA = new Thread() {
+			public void run() {
+				motorY.goTo(a.getY(), 4);
+			}
+		};
+		
+		trackXPointA.start();
+		trackYPointA.start();
+		
+		
+				//wait for this movement to finish
+					try {
+						trackXPointA.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						trackYPointA.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		Delay.msDelay(2000);
+		
+	// cycle through the other points
+		for(int i=0;i<3; i++) {			
+			final Coordinates k,l;
+			double motionTime = 0;
+			
+			k = corners.get(i);
+			l = corners.get(i+1);
+			
+			double distanceX = Math.abs(l.getX() - k.getX());
+			double distanceY = Math.abs(l.getY() - k.getY());
+			
+			double distanceBetweenPoints = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+			
+			motionTime = distanceBetweenPoints/speedInPixelsPerS;
+			
+			final int speedX = (int) Math.abs((distanceX/motionTime));  
+			final int speedY = (int) Math.abs((distanceY/motionTime));
+			
+			Thread trackXPoint = new Thread() {
+				public void run() {
+						motorX.goTo(l.getX(), speedX);	
+				}
+			};
+			
+			
+			Thread trackYPoint = new Thread() {
+				public void run() {
+					motorY.goTo(l.getY(), speedY);
+				}
+			};
+			
+			trackXPoint.start();
+			trackYPoint.start();
+			
+			
+			
+					//wait for this movement to finish
+						try {
+							trackXPoint.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						try {
+							trackYPoint.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}			
+			
+			
+		}		
+	
+	
+		// track fourth edge (go back to start point)			
+		Thread trackXPointAReturn = new Thread() {
+			public void run() {
+					motorX.goTo(a.getX(), speedXAD);		
+			}
+		};
+		
+		
+		Thread trackYPointAReturn = new Thread() {
+			public void run() {
+				motorY.goTo(a.getY(), speedYAD);
+			}
+		};
+		
+		trackXPointAReturn.start();
+		trackYPointAReturn.start();
+		
+		
+				//wait for this movement to finish
+					try {
+						trackXPointAReturn.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						trackYPointAReturn.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		
+		
+}	
+	
+	public void trackCross(final Motor motorX, final Motor motorY, ArrayList <Coordinates> corners){
+		final Coordinates a,d;
+		final int speedInPixelsPerS = 4;
+	
+		double motionTimeAD = 0;
+		
+		a = corners.get(0);
+		d = corners.get(11);
+		
+		double distanceXAD = Math.abs(a.getX() - d.getX());
+		double distanceYAD = Math.abs(a.getY() - d.getY());
+		
+		double distanceBetweenPointsAD = Math.sqrt(Math.pow(distanceXAD, 2) + Math.pow(distanceYAD, 2));
+		
+		motionTimeAD = distanceBetweenPointsAD/speedInPixelsPerS;
+		
+		final int speedXAD = (int) Math.abs((distanceXAD/motionTimeAD));  
+		final int speedYAD = (int) Math.abs((distanceYAD/motionTimeAD));
+		
+		System.out.println("Tracking Cross");
+
+	// go to first point 	
+		System.out.println("Press to go to first point");
+		Button.waitForAnyPress();
+		Thread trackXPointA = new Thread() {
+			public void run() {
+					motorX.goTo(a.getX(), 4);		
+			}
+		};
+		
+		
+		Thread trackYPointA = new Thread() {
+			public void run() {
+				motorY.goTo(a.getY(), 4);
+			}
+		};
+		
+		trackXPointA.start();
+		trackYPointA.start();
+		
+		
+				//wait for this movement to finish
+					try {
+						trackXPointA.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						trackYPointA.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		Delay.msDelay(2000);
+	// cycle through the other points
+		for(int i=0;i<11; i++) {			
+			final Coordinates k,l;
+			double motionTime = 0;
+			
+			k = corners.get(i);
+			l = corners.get(i+1);
+			
+			double distanceX = Math.abs(l.getX() - k.getX());
+			double distanceY = Math.abs(l.getY() - k.getY());
+			
+			double distanceBetweenPoints = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+			
+			motionTime = distanceBetweenPoints/speedInPixelsPerS;
+			
+			final int speedX = (int) Math.abs((distanceX/motionTime));  
+			final int speedY = (int) Math.abs((distanceY/motionTime));
+			
+			Thread trackXPoint = new Thread() {
+				public void run() {
+						motorX.goTo(l.getX(), speedX);	
+				}
+			};
+			
+			
+			Thread trackYPoint = new Thread() {
+				public void run() {
+					motorY.goTo(l.getY(), speedY);
+				}
+			};
+			
+			trackXPoint.start();
+			trackYPoint.start();
+			
+			
+			
+					//wait for this movement to finish
+						try {
+							trackXPoint.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						try {
+							trackYPoint.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}			
+			
+			
+		}		
+	
+	
+		// track fourth edge (go back to start point)		
+		Thread trackXPointAReturn = new Thread() {
+			public void run() {
+					motorX.goTo(a.getX(), speedXAD);		
+			}
+		};
+		
+		
+		Thread trackYPointAReturn = new Thread() {
+			public void run() {
+				motorY.goTo(a.getY(), speedYAD);
+			}
+		};
+		
+		trackXPointAReturn.start();
+		trackYPointAReturn.start();
+		
+		
+				//wait for this movement to finish
+					try {
+						trackXPointAReturn.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						trackYPointAReturn.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		
+		
+}
+	
+	public void trackSemicircle(final Motor motorX, final Motor motorY, ArrayList <Coordinates> corners){
+		final Coordinates a,d;
+		final int speedInPixelsPerS = 4;
+	
+		double motionTimeAD = 0;
+		
+		a = corners.get(0);
+		d = corners.get(4);
+		
+		double distanceXAD = Math.abs(a.getX() - d.getX());
+		double distanceYAD = Math.abs(a.getY() - d.getY());
+		
+		double distanceBetweenPointsAD = Math.sqrt(Math.pow(distanceXAD, 2) + Math.pow(distanceYAD, 2));
+		
+		motionTimeAD = distanceBetweenPointsAD/speedInPixelsPerS;
+		
+		final int speedXAD = (int) Math.abs((distanceXAD/motionTimeAD));  
+		final int speedYAD = (int) Math.abs((distanceYAD/motionTimeAD));
+		
+		System.out.println("Tracking Circle");
+
+	// go to first point 	
+		System.out.println("Press to go to first point");
+		Button.waitForAnyPress();
+		Thread trackXPointA = new Thread() {
+			public void run() {
+					motorX.goTo(a.getX(), 4);		
+			}
+		};
+		
+		
+		Thread trackYPointA = new Thread() {
+			public void run() {
+				motorY.goTo(a.getY(), 4);
+			}
+		};
+		
+		trackXPointA.start();
+		trackYPointA.start();
+		
+		
+				//wait for this movement to finish
+					try {
+						trackXPointA.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						trackYPointA.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		Delay.msDelay(2000);
+		
+	// cycle through the other points
+		for(int i=0;i<4; i++) {			
+			final Coordinates k,l;
+			double motionTime = 0;
+			
+			k = corners.get(i);
+			l = corners.get(i+1);
+			
+			double distanceX = Math.abs(l.getX() - k.getX());
+			double distanceY = Math.abs(l.getY() - k.getY());
+			
+			double distanceBetweenPoints = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+			
+			motionTime = distanceBetweenPoints/speedInPixelsPerS;
+			
+			final int speedX = (int) Math.abs((distanceX/motionTime));  
+			final int speedY = (int) Math.abs((distanceY/motionTime));
+			
+			Thread trackXPoint = new Thread() {
+				public void run() {
+						motorX.goTo(l.getX(), speedX);	
+				}
+			};
+			
+			
+			Thread trackYPoint = new Thread() {
+				public void run() {
+					motorY.goTo(l.getY(), speedY);
+				}
+			};
+			
+			trackXPoint.start();
+			trackYPoint.start();
+			
+			
+			
+					//wait for this movement to finish
+						try {
+							trackXPoint.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						try {
+							trackYPoint.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}			
+			
+			
+		}		
+	
+	
+		// track fourth edge (go back to start point)		
+		Thread trackXPointAReturn = new Thread() {
+			public void run() {
+					motorX.goTo(a.getX(), speedXAD);		
+			}
+		};
+		
+		
+		Thread trackYPointAReturn = new Thread() {
+			public void run() {
+				motorY.goTo(a.getY(), speedYAD);
+			}
+		};
+		
+		trackXPointAReturn.start();
+		trackYPointAReturn.start();
+		
+		
+				//wait for this movement to finish
+					try {
+						trackXPointAReturn.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						trackYPointAReturn.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		
+		
+}
+	
+	public void sortTriangle(final Motor motorX, final Motor motorY, final Motor motorZ, ArrayList <Coordinates> corners) {
+		
+		int sumX=0;
+		int sumY=0;		
+		
+			for(int i=0 ; i<3; i++) {
+				final Coordinates z;
+				
+				z=corners.get(i);
+				
+				sumX = sumX +z.getX();
+				sumY = sumY +z.getY();
+			}
+			
+		final int centreOfGravityX = sumX/3; //zwaartepuntX = (x1+x2+x3)/3
+		final int centreOfGravityY = sumY/3; //zwaartepuntY = (y1+y2+y3)/3
+		
+		Thread gotoCentreOfGravityX = new Thread() {
+			public void run() {
+				motorX.goTo(centreOfGravityX, 4);		
+			}
+		};
+		
+		
+		Thread gotoCentreOfGravityY = new Thread() {
+			public void run() {
+				motorY.goTo(centreOfGravityY, 4);
+			}
+		};
+		
+		gotoCentreOfGravityX.start();
+		gotoCentreOfGravityY.start();
+		
+		
+				//wait for this movement to finish
+					try {
+						gotoCentreOfGravityX.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						gotoCentreOfGravityY.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+		motorX.goTo(xResolution, 4); //motor helemaal naar het einde laten gaan
+		motorZ.rotateTo(-360);//z-as laten zakken. Heb zelf een waarde ingevuld, aangezien ik denk dat de 'goTo()' methode niet werkt voor de z-motor?
+		motorX.goTo(0, 4);
+		motorZ.rotateTo(0);
+	}
+	
+	public void sortSquare(final Motor motorX, final Motor motorY, final Motor motorZ, ArrayList <Coordinates> corners) {
+			
+			int sumX=0;
+			int sumY=0;		
+			
+				for(int i=0 ; i<4; i++) {
+					final Coordinates z;
+					
+					z=corners.get(i);
+					
+					sumX = sumX +z.getX();
+					sumY = sumY +z.getY();
+				}
+				
+			final int centreOfGravityX = sumX/4; 
+			final int centreOfGravityY = sumY/4; 
+			
+			Thread gotoCentreOfGravityX = new Thread() {
+				public void run() {
+					motorX.goTo(centreOfGravityX, 4);		
+				}
+			};
+			
+			
+			Thread gotoCentreOfGravityY = new Thread() {
+				public void run() {
+					motorY.goTo(centreOfGravityY, 4);
+				}
+			};
+			
+			gotoCentreOfGravityX.start();
+			gotoCentreOfGravityY.start();
+			
+			
+					//wait for this movement to finish
+						try {
+							gotoCentreOfGravityX.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						try {
+							gotoCentreOfGravityY.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+			motorX.goTo(0, 4); 
+			motorZ.rotateTo(-360);
+			motorX.goTo(xResolution, 4);
+			motorZ.rotateTo(0);
+		}
+	
+	public void sortCross(final Motor motorX, final Motor motorY, final Motor motorZ, ArrayList <Coordinates> corners) {
+		
+		int sumX=0;
+		int sumY=0;		
+		
+			for(int i=0 ; i<12; i++) {
+				final Coordinates z;
+				
+				z=corners.get(i);
+				
+				sumX = sumX +z.getX();
+				sumY = sumY +z.getY();
+			}
+			
+		final int centreOfGravityX = sumX/12; 
+		final int centreOfGravityY = sumY/12; 
+		
+		Thread gotoCentreOfGravityX = new Thread() {
+			public void run() {
+				motorX.goTo(centreOfGravityX, 4);		
+			}
+		};
+		
+		
+		Thread gotoCentreOfGravityY = new Thread() {
+			public void run() {
+				motorY.goTo(centreOfGravityY, 4);
+			}
+		};
+		
+		gotoCentreOfGravityX.start();
+		gotoCentreOfGravityY.start();
+		
+		
+				//wait for this movement to finish
+					try {
+						gotoCentreOfGravityX.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						gotoCentreOfGravityY.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+		motorY.goTo(yResolution, 4); 
+		motorZ.rotateTo(-360);
+		motorY.goTo(0, 4);
+		motorZ.rotateTo(0);
+	}
+	
+	public void sortSemicircle(final Motor motorX, final Motor motorY, final Motor motorZ, ArrayList <Coordinates> corners) {
+			
+			int sumX=0;
+			int sumY=0;		
+			
+				for(int i=0 ; i<5; i++) {
+					final Coordinates z;
+					
+					z=corners.get(i);
+					
+					sumX = sumX +z.getX();
+					sumY = sumY +z.getY();
+				}
+				
+			final int centreOfGravityX = sumX/5; 
+			final int centreOfGravityY = sumY/5; 
+			
+			Thread gotoCentreOfGravityX = new Thread() {
+				public void run() {
+					motorX.goTo(centreOfGravityX, 4);		
+				}
+			};
+			
+			
+			Thread gotoCentreOfGravityY = new Thread() {
+				public void run() {
+					motorY.goTo(centreOfGravityY, 4);
+				}
+			};
+			
+			gotoCentreOfGravityX.start();
+			gotoCentreOfGravityY.start();
+			
+			
+					//wait for this movement to finish
+						try {
+							gotoCentreOfGravityX.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						try {
+							gotoCentreOfGravityY.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+			motorY.goTo(0, 4); 
+			motorZ.rotateTo(-360);
+			motorY.goTo(yResolution, 4);
+			motorZ.rotateTo(0);
+		}
+
 }

@@ -20,15 +20,12 @@ public class Motor extends EV3LargeRegulatedMotor {
 	double degreesPerActUnit;
 	
 
-	public Motor(Port inpPort, double inpDegreesPerActUnit, String motorName) {   //double inpNormalMotorCurrent, String inpMotorName,
+	public Motor(Port inpPort, double inpDegreesPerActUnit, String inpMotorName) { 
 		super(inpPort);
-		//normalMotorCurrent = inpNormalMotorCurrent;
-		//maxMotorCurrentForHoming = overcurrentLimitForHoming*normalMotorCurrent + normalMotorCurrent;
-		//motorName = inpMotorName;
+		motorName = inpMotorName;
 		degreesPerActUnit = inpDegreesPerActUnit;
 		//homingSpeed = (int) (inpHomingSpeed*mmToDegreesConversion); //  degrees/s
 	}
-	
 	
 	public double getConversion() {
 		return degreesPerActUnit;
@@ -49,7 +46,6 @@ public class Motor extends EV3LargeRegulatedMotor {
 	public void home(EV3TouchSensor eindeloop) {
 		SampleProvider sp = eindeloop.getTouchMode();
 		float[] sample = new float[sp.sampleSize()];
-		System.out.println("Homing " + motorName + " in progress");
 		isHomed=false;
 		
 		while (!isHomed) {
@@ -63,14 +59,10 @@ public class Motor extends EV3LargeRegulatedMotor {
 	        	 this.stop();
 	        	 this.resetTachoCount();
 	        	 isHomed=true;
-	        	 System.out.println("Homing " + motorName + " DONE");
 	         }
 		}
 	}
-	
 
-	
-	
 	public void goTo(int inpPositionInActUnits, int inpSpeedInPixelsPerS) {
 		int absolutePosInDegrees = (int) (inpPositionInActUnits*degreesPerActUnit);
 		this.setSpeed((int) (inpSpeedInPixelsPerS*degreesPerActUnit));
