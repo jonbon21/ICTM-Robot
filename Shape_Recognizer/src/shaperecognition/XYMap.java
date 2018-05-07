@@ -29,7 +29,6 @@ public class XYMap {
 		
 		//SENSOR SETUP
 		sensor.setColorIdMode();
-		sensor.setFloodLight(false);
 		int homingColor = sensor.getColorID();
 
 		//SCANNING
@@ -75,6 +74,7 @@ public class XYMap {
 		//END SCANNING
 		motorX.close();			//free up motor resources 
 		motorY.close();
+		sensor.close();
 		Sound.beepSequence(); 
   
 	} 
