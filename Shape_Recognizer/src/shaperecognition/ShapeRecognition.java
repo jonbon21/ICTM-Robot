@@ -33,8 +33,8 @@ public class ShapeRecognition {
 		
 	//***MAP INIT	
 		
-		int pixelDimensionInMM = 5;					//defines a square pixel of x by x
-		double maxDistanceXInMM = 120.0; 			//maximum x and y-length of physical matrix [in mm]
+		int pixelDimensionInMM = 10;					//defines a square pixel of x by x
+		double maxDistanceXInMM = 150.0; 			//maximum x and y-length of physical matrix [in mm]
 		double maxDistanceYInMM = 120.0;
 		double maxDistanceZInMM = 32.0;
 		

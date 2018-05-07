@@ -231,10 +231,12 @@ public class shape extends zone{
 		        		res = "square";
 		        		keepGoing = false;
 		        	}
+		        	break;
 		        case 4: 
 		        	System.out.print("semi-circle");
 		        	res = "semi-circle";
 		        	keepGoing = false;
+		        	break;
 		     }
 		 k++;
 		 }   

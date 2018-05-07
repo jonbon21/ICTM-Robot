@@ -39,7 +39,7 @@ public class XYMap {
 			Delay.msDelay(100);
 			motorX.goTo(0, 4);
 			motorY.goTo(i, 4);
-			Delay.msDelay(2000);
+			Delay.msDelay(100);
 			System.out.println();
 			
 			for(int j=0;j<xResolution; j++) {
@@ -74,9 +74,10 @@ public class XYMap {
 		
 				
 		//END SCANNING
+		System.out.println();
 		motorX.close();			//free up motor resources 
 		motorY.close();
-		sensor.close();
+		//sensor.close();
 		Sound.beepSequence(); 
   
 	} 
