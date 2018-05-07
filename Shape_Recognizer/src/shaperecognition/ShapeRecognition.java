@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
@@ -32,8 +33,8 @@ public class ShapeRecognition {
 		
 	//***MAP INIT	
 		
-		int pixelDimensionInMM = 20;					//defines a square pixel of x by x
-		double maxDistanceXInMM = 200.0; 			//maximum x and y-length of physical matrix [in mm]
+		int pixelDimensionInMM = 5;					//defines a square pixel of x by x
+		double maxDistanceXInMM = 120.0; 			//maximum x and y-length of physical matrix [in mm]
 		double maxDistanceYInMM = 120.0;
 		double maxDistanceZInMM = 32.0;
 		

@@ -22,7 +22,7 @@ public class scan {
 	}
 	public void prepare() {
 	// set first row and first column equal to 0
-	for (int j = 0; j < map.length; j++) {
+	for (int j = 0; j < map[0].length; j++) {
 		map[0][j] = 0;
 		map[map.length-1][j] = 0;
 	}
