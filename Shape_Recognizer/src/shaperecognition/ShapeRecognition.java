@@ -2,6 +2,7 @@ package shaperecognition;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
@@ -132,23 +133,69 @@ public class ShapeRecognition {
 		System.out.println("Press any key to start identification");
 		Button.waitForAnyPress();		
 		
-		String shape= "square";
-		System.out.println("The shape is a " +shape);
 		
-	//***Creating a simulation ArrayList with the corners of the shapes	
-		Coordinates a = new Coordinates(20,5);
-		Coordinates b = new Coordinates(20,20);
-		Coordinates c = new Coordinates(5,20);
-		Coordinates d = new Coordinates(5,5);
-		//Coordinates e = new Coordinates(5,20);
+		printInt(map.getMap());
+		System.out.println();
+		scan scanObj = new scan(map.getMap());
+		int dimX = scanObj.getDimX(); int dimY = scanObj.getDimY();
+		scanObj.prepare();
+		scanObj.findZones(); //zone wordt gedefinieerd als aaneengesloten geheel waarbij elk element verbonden is langs boven,onder,links of rechts
+		ArrayList<zone> zones = scanObj.getZoneList();	
+		Collections.sort(zones, new zoneSort()); //zones sorteren volgens 'aantal elementen'
 		
-		ArrayList<Coordinates> corners = new ArrayList<Coordinates>(); //deze krijgen we normaal mee vanuit de shape-identification
-		
-		corners.add(a);
-		corners.add(b);
-		corners.add(c);
-		corners.add(d);
-		//corners.add(e);
+		for (int k = 0; k < zones.size(); k++) {
+			System.out.println("aantal elementen zone " +(k+1)+ " : "  +zones.get(k).getZoneEl()); //print aantal elementen
+		 	///printInt(zones.get(k).getArrayZone(dimX,dimY)); //print zones	
+		}
+		zone zoneLargest = new zone(zones.get(zones.size()-1));
+		System.out.println("fill holes");
+		zoneLargest.fillHoles(dimX, dimY);
+		printInt(zoneLargest.getArrayZone(dimX, dimY));
+		shape shapeObj = new shape(zoneLargest);
+		Coordinates start = new Coordinates(shapeObj.findBoundPoint());
+		shapeObj.findBound(dimX,dimY,start);
+		System.out.println("rand grootste zone");
+		printInt(shapeObj.getArrayBound(dimX,dimY));
+		shapeObj.direction();
+		///System.out.println("orientatie vectoren");
+		///printDouble(shapeObj.getArrayAngle(shapeObj.getDirection(),dimX,dimY));
+		shapeObj.rotation();
+		///System.out.println("rotatie vectoren");
+		///printDouble(shapeObj.getArrayAngle(shapeObj.getRotation(),dimX,dimY));
+		shapeObj.internalAngle();
+		///System.out.println("inwendige hoeken");
+		///printDouble(shapeObj.getArrayAngle(shapeObj.getAngle(),dimX,dimY));
+		System.out.println();
+		System.out.println("circumference: " +shapeObj.circumference());
+		System.out.println("surface: " +shapeObj.surface());
+		//System.out.println("circumferenceCheck: " +(3+3+Math.sqrt(18)));
+		System.out.println();
+		//double[] sumRotation = shapeObj.rotSum(0);
+		//System.out.println("sum rotation vectors");
+		//printDouble(shapeObj.getArrayAngle(sumRotation,dimX,dimY));
+		//double[] sumRotationW = shapeObj.weight(sumRotation, 0);
+		//System.out.println();
+		//System.out.println("sum rotation: ");
+		//printDouble(shapeObj.getArrayAngle(sumRotationW,dimX,dimY));
+		//double[] internalAngleW = shapeObj.internalAngleNew(sumRotationW);
+		//System.out.println();
+		//System.out.println("weighted internal angles");
+		//printDouble(shapeObj.getArrayAngle(internalAngleW,dimX,dimY));
+		//shapeObj.determineAngles(internalAngleW);
+		//System.out.println("surface - circumference ratio: " + (shapeObj.surface()/shapeObj.circumference()));
+		//Coordinates P1 = new Coordinates(0,0);
+		//Coordinates P2 = new Coordinates(0,1);
+		//System.out.println(P1.getAngle(P2));
+		//System.out.println(shapeObj.getBoundEl());
+		///System.out.println("print lines");
+		shapeObj.calcLines();
+		///printInt(shapeObj.getArrayInt(shapeObj.getLines(),dimX,dimY));
+		shapeObj.calcLineRot();
+		printInt(shapeObj.getArrayCorner(dimX, dimY));
+		shapeObj.internalAngleCorner();
+		System.out.print("shape: "); 
+		String shape = shapeObj.determineShape();
+		ArrayList<Coordinates> corners = shapeObj.getCorner();
 		
 	//***EDGE TRACKING + SORTING Routine
 		lcd.clear();
@@ -206,5 +253,21 @@ public class ShapeRecognition {
 		System.out.println("Press to QUIT PROGRAM");
 		Button.waitForAnyPress();
 	}
-	
+	public static void printInt(int[][] M){
+		for (int i = 0; i < M.length; i++) {
+			for (int j = 0; j < M[i].length; j++) {
+			System.out.print(M[i][j] + " "); //+ "\t"
+		}
+		System.out.println();
+	}
+	}
+	public static void printDouble(double[][] M){
+		for (int i = 0; i < M.length; i++) {
+			for (int j = 0; j < M[i].length; j++) {    
+			//time = Double.valueOf(df.format(time));
+			System.out.print(String.format("%.2f", M[i][j]) + "\t");
+		}
+		System.out.println();
+	}
+	}	
 }

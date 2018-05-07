@@ -10,6 +10,10 @@ class Coordinates {
         this.X = first;
         this.Y = second;
     }
+    public Coordinates(Coordinates A) {
+    	X = A.X;
+    	Y = A.Y;
+    }
     public int getX() {
         return X;
     }

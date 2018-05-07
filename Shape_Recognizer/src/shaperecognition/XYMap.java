@@ -20,7 +20,9 @@ public class XYMap {
 		yResolution=inpYRes;
 		xyMap = new int[xResolution][yResolution];
 	}
-
+	public int[][] getMap() {
+		return xyMap;
+	}
 	public void scan(Motor motorX, Motor motorY, ColorSensor sensor) {
 		
 		System.out.println("xResolution " + xResolution);
