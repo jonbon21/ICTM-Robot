@@ -18,7 +18,7 @@ public class XYMap {
 	public XYMap(int inpXRes, int inpYRes) {
 		xResolution=inpXRes;
 		yResolution=inpYRes;
-		xyMap = new int[yResolution][xResolution];
+		xyMap = new int[xResolution][yResolution];
 	}
 
 	public void scan(Motor motorX, Motor motorY, ColorSensor sensor) {
@@ -59,12 +59,12 @@ public class XYMap {
 				
 				Delay.msDelay(100);
 				if(sensor.getColorID()== homingColor) {
-					xyMap[i][j]=0;
+					xyMap[j][i]=0;
 					System.out.print("0");
 				} 
 				
 				else {
-					xyMap[i][j]=1;
+					xyMap[j][i]=1;
 					System.out.print("X");
 				}
 				

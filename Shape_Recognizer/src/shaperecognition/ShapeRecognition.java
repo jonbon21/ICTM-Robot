@@ -31,7 +31,7 @@ public class ShapeRecognition {
 		
 	//***MAP INIT	
 		
-		int pixelDimensionInMM = 5;					//defines a square pixel of x by x
+		int pixelDimensionInMM = 20;					//defines a square pixel of x by x
 		double maxDistanceXInMM = 200.0; 			//maximum x and y-length of physical matrix [in mm]
 		double maxDistanceYInMM = 120.0;
 		double maxDistanceZInMM = 32.0;
@@ -108,7 +108,7 @@ public class ShapeRecognition {
 
 		
 	//***MAPPING Routine
-	/*
+	
 		lcd.clear();
 		lcd.refresh();
 		System.out.println("Press any key to start MAPPING");
@@ -124,7 +124,7 @@ public class ShapeRecognition {
 		
 		map.scan(motorX, motorY, sensor1);   
 		motorZ.rotateTo(0); 
-	*/	
+		
 		
 	//***SHAPE IDENTIFICATION Routine
 		lcd.clear();
