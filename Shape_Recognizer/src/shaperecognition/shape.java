@@ -233,8 +233,8 @@ public class shape extends zone{
 		        	}
 		        	break;
 		        case 4: 
-		        	System.out.print("semi-circle");
-		        	res = "semi-circle";
+		        	System.out.print("semicircle");
+		        	res = "semicircle";
 		        	keepGoing = false;
 		        	break;
 		     }
