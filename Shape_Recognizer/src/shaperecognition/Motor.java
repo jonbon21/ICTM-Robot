@@ -67,6 +67,8 @@ public class Motor extends EV3LargeRegulatedMotor {
 		int absolutePosInDegrees = (int) (inpPositionInActUnits*degreesPerActUnit);
 		this.setSpeed((int) (inpSpeedInPixelsPerS*degreesPerActUnit));
 		Delay.msDelay(100);
+		this.setAcceleration(500);
+		Delay.msDelay(100);
 		super.rotateTo(absolutePosInDegrees);
 		this.waitComplete();
 	}
