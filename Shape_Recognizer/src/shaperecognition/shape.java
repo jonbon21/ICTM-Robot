@@ -233,49 +233,72 @@ public class shape extends zone{
 		        	}
 		        	break;
 		        case 4: 
-		        	System.out.print("semicircle");
-		        	res = "semicircle";
+		        	System.out.print("semi-circle");
+		        	res = "semi-circle";
 		        	keepGoing = false;
 		        	break;
 		     }
 		 k++;
-		 }   
-		return res;
+		 } 
+	return res;
 	}
-	public void calcLineRot() {
+	public void calcLineRot(boolean optMerge) {
 		//ArrayList<Double> lineRot = new ArrayList<Double>();
 		double rSum = 0; int idEnd = 0; int nv = 0;
-		double rotC = 0; int lineTol = 2; double rotCI = 0; double tol = 0.00001;
-		for(int i = 0; i<lines.length+nv; i++) {
-			if( Math.abs(lines[(i+1)%lines.length]-lines[i]) > 0.5 ){
-				lineLastPointId.add(i); 
-				if( rotCI == 0 ) {nv = i; rotCI = 1;} //geval waarbij lijn 1 start op index 0
-				//System.out.println("id: " + i);
-				corner.add(new Coordinates(boundary.get(i).getX(),boundary.get(i).getY()));
+		double rotC = 0; int lineTol = 2; double rotCI = 0; double tol = 0.00001; boolean ffl = false; //FoundFirstLine
+		boolean mergeLines = true; int mergeId = 0; 
+		while(mergeLines == true) {
+			ffl = false;
+			for(int i = 0; i<lines.length+nv; i++) {
+				if( Math.abs(lines[(i+1)%lines.length]-lines[i%lines.length]) > 0.5 ){
+					lineLastPointId.add(i); 
+					if( ffl == false ) {nv = i; ffl = true;} //geval waarbij lijn 1 start op index 0
+					corner.add(new Coordinates(boundary.get(i).getX(),boundary.get(i).getY()));
+				}
 			}
-		}
-		for (int i=1; i < lineLastPointId.size()+1; i++) {
-					rotCI = 0;
-					if (Math.abs(rotation[lineLastPointId.get((i-1))+1]) < tol) {rotC = 0;}
-					else {
-						for(int k = 1;k <= lineTol;k++) {
-							rotCI = rotCI + (rotCI + rotation[lineLastPointId.get(i-1)+1+k]);
+			for (int i=1; i < lineLastPointId.size()+1; i++) {
+						rotCI = 0;
+						if (Math.abs(rotation[lineLastPointId.get((i-1))+1]) < tol) {rotC = 0;}
+						else {
+							for(int k = 1;k <= lineTol;k++) {
+								rotCI = rotCI + (rotCI + rotation[(lineLastPointId.get(i-1)+1+k)%rotation.length]);
+							}
+							rotCI = rotCI/(lineTol+1);
+							rotC = - Math.signum(rotCI) * Math.round(Math.abs(rotCI)/(Math.PI/4)) * (Math.PI/4);
 						}
-						rotCI = rotCI/(lineTol+1);
-						rotC = - Math.signum(rotCI) * Math.round(Math.abs(rotCI)/(Math.PI/4)) * (Math.PI/4);
-					}
-			rSum = rotC;
-			//System.out.println("rotC: " +rotC);
-			//System.out.println("id: " +lineLastPointId.get(i));
-			if(i+1 < lineLastPointId.size()) {idEnd = lineLastPointId.get(i+1)-1;}
-			else {idEnd = lineLastPointId.get((i+1)%lineLastPointId.size())-1 + rotation.length;}
-			for(int j=( lineLastPointId.get(i-1)+2 ); j <= idEnd; j++) {
-				//System.out.println("rotation: " +rotation[j%rotation.length]);
-				rSum += rotation[j%rotation.length];
+				rSum = rotC;
+				//System.out.println("rotC: " +rotC);
+				//System.out.println("id: " +lineLastPointId.get(i));
+				if(i+1 < lineLastPointId.size()) {idEnd = lineLastPointId.get(i+1)-1;}
+				else {idEnd = lineLastPointId.get((i+1)%lineLastPointId.size())-1 + rotation.length;}
+				for(int j=( lineLastPointId.get(i-1)+2 ); j <= idEnd; j++) {
+					//System.out.println("rotation: " +rotation[j%rotation.length]);
+					rSum += rotation[j%rotation.length];
+				}
+				cornerRotation.add(rSum);
+				System.out.println("rotation corner: " +rSum);
+				//lineRot.add(rSum);
 			}
-			cornerRotation.add(rSum);
-			System.out.println("rotation corner: " +rSum);
-			//lineRot.add(rSum);
+			mergeLines = false;
+			for(int i = 0; i<cornerRotation.size(); i++) {
+				if((cornerRotation.get(i) <= 45*(2*Math.PI/360))&& (optMerge == true)) {
+					mergeLines = true;
+					if(cornerRotation.get(i)< cornerRotation.get(mergeId)) {
+						mergeId = i;
+					}
+				}
+			}
+			if(mergeLines == true) {
+				for(int j = 0; j<lines.length; j++) {
+					if(lines[j] == lines[lineLastPointId.get(mergeId)]) {
+					lines[j] = 	lines[lineLastPointId.get((mergeId+1)%lineLastPointId.size())];	
+					}	
+				}
+				lineLastPointId.clear();
+				cornerRotation.clear();
+				corner.clear();
+				System.out.println("linesMerged");
+			}
 		}
 		//Double[] rtn= lineRot.toArray(new Double[lineRot.size()]);
 		//System.out.println(boundary.get(31).getX());
@@ -295,8 +318,8 @@ public class shape extends zone{
 	public void calcLines() {
 		lines = new int[this.getBoundEl()];
 		int idLine = 0; int newLine = 1; int id = 0; double rotC = 0; double rotCF = 0;//int nv = 0; 
-		int lineTol = 2; double rotCI = 0; double tol = 0.00001;
-		for (int i = 0; i < 2*lines.length+1 ; i++) {
+		int lineTol = 2; double rotCI = 0; double tol = 0.00001; int nI = 1;
+		for (int i = 0; i < 2*lines.length+nI ; i++) {
 			id = i % lines.length;
 			if (newLine == 1) {
 				rotCI = 0;
@@ -312,6 +335,7 @@ public class shape extends zone{
 				idLine++;
 				lines[id] = idLine;
 				newLine = 0;
+				if(idLine == 3 ) {nI = id;};
 			}
 			else if ( (newLine == 0) && (Math.abs(rotC + rotation[id]) <  tol) ) {
 				lines[id] = idLine;
@@ -396,4 +420,4 @@ public class shape extends zone{
 		}
 	}
 }	
-
+		

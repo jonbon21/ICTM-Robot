@@ -149,9 +149,9 @@ public class ShapeRecognition {
 		 	///printInt(zones.get(k).getArrayZone(dimX,dimY)); //print zones	
 		}
 		zone zoneLargest = new zone(zones.get(zones.size()-1));
-		System.out.println("fill holes");
+		///System.out.println("fill holes");
 		zoneLargest.fillHoles(dimX, dimY);
-		printInt(zoneLargest.getArrayZone(dimX, dimY));
+		///printInt(zoneLargest.getArrayZone(dimX, dimY));
 		shape shapeObj = new shape(zoneLargest);
 		Coordinates start = new Coordinates(shapeObj.findBoundPoint());
 		shapeObj.findBound(dimX,dimY,start);
@@ -188,10 +188,10 @@ public class ShapeRecognition {
 		//Coordinates P2 = new Coordinates(0,1);
 		//System.out.println(P1.getAngle(P2));
 		//System.out.println(shapeObj.getBoundEl());
-		///System.out.println("print lines");
 		shapeObj.calcLines();
+		shapeObj.calcLineRot(true);
+		///System.out.println("print lines");
 		///printInt(shapeObj.getArrayInt(shapeObj.getLines(),dimX,dimY));
-		shapeObj.calcLineRot();
 		printInt(shapeObj.getArrayCorner(dimX, dimY));
 		shapeObj.internalAngleCorner();
 		System.out.print("shape: "); 
