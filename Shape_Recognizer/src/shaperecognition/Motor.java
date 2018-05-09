@@ -16,7 +16,7 @@ public class Motor extends EV3LargeRegulatedMotor {
 	Boolean isHomed = false;
 	Boolean homingBusy = false;
 	String motorName;
-	int homingSpeed = 80;		//in degrees/s
+	int homingSpeed = 150;		//in degrees/s
 	double degreesPerActUnit;
 	
 
@@ -43,7 +43,7 @@ public class Motor extends EV3LargeRegulatedMotor {
 		}
 	}
 	
-	public void home(EV3TouchSensor eindeloop) {
+	public void home(EV3TouchSensor eindeloop, int offset) {
 		SampleProvider sp = eindeloop.getTouchMode();
 		float[] sample = new float[sp.sampleSize()];
 		isHomed=false;
@@ -57,6 +57,7 @@ public class Motor extends EV3LargeRegulatedMotor {
       	  	
 	        if (sample[0] >0) {
 	        	 this.stop();
+	        	 this.rotate(offset);
 	        	 this.resetTachoCount();
 	        	 isHomed=true;
 	         }

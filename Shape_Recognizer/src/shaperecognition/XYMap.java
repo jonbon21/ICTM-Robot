@@ -3,6 +3,8 @@ package shaperecognition;
 import lejos.utility.Delay;
 import shaperecognition.library.ColorSensor;
 import lejos.hardware.port.*;
+import lejos.hardware.sensor.EV3TouchSensor;
+
 import java.util.ArrayList;
 
 import lejos.hardware.Button;
@@ -23,7 +25,83 @@ public class XYMap {
 	public int[][] getMap() {
 		return xyMap;
 	}
-	public void scan(Motor motorX, Motor motorY, ColorSensor sensor) {
+	
+	
+	public void scan2 (final Motor motorX, final Motor motorY, final ColorSensor sensor) {
+
+		final int varX = (int) motorX.getConversion() ;
+		final int varY =0 ;
+		
+		//SENSOR SETUP
+		sensor.setColorIdMode();
+		final int homingColor = sensor.getColorID();
+		
+		//matrix 	
+		final Thread matrix = new Thread() {
+			public void run() {
+			for(int i=0;i<xResolution;i++) {	
+				motorX.goTo(xResolution, 2);	
+						/*Delay.msDelay(100);
+						motorX.goTo(0, 4);
+						motorY.goTo(i, 4);
+						Delay.msDelay(2000);
+						motorX.goTo(xResolution, 1);*/
+			}
+		
+			Sound.beepSequence(); 	
+			}
+		};
+		
+		
+		//color detection 
+		Thread color = new Thread() {
+			public void run() {
+			int i = 0;
+			int j =0 ;
+			while(i<xResolution && j<yResolution) {
+				if(motorX.getTachoCount()==(varX*i)) {
+					if(sensor.getColorID()== homingColor) {
+						xyMap[i][j]=0;
+						System.out.print("0");
+						i++;
+					} 
+					if(sensor.getColorID()!= homingColor) {
+						xyMap[i][j]=1;
+						System.out.print("X");
+						i++;
+					}
+					
+					
+				}
+				
+			}
+			}
+			
+		};
+		
+		
+		
+		color.start();
+		matrix.start();
+		
+				//wait for this movement to finish
+					try {
+						color.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try {
+						matrix.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		
+		
+		}
+	public void scan(Motor motorX, Motor motorY, ColorSensor sensor, EV3TouchSensor eindeloop) {
 		
 		System.out.println("xResolution " + xResolution);
 		System.out.println("yResolution " + yResolution);
@@ -37,7 +115,7 @@ public class XYMap {
 		for(int i=0;i<yResolution;i++) {
 			
 			Delay.msDelay(100);
-			motorX.goTo(0, 4);
+			motorX.home(eindeloop,30);
 			motorY.goTo(i, 4);
 			Delay.msDelay(100);
 			System.out.println();
@@ -75,9 +153,6 @@ public class XYMap {
 				
 		//END SCANNING
 		System.out.println();
-		motorX.close();			//free up motor resources 
-		motorY.close();
-		//sensor.close();
 		Sound.beepSequence(); 
   
 	} 
@@ -829,7 +904,7 @@ public class XYMap {
 					}
 					
 		motorX.goTo(xResolution, 4); //motor helemaal naar het einde laten gaan
-		motorZ.rotateTo(-360);//z-as laten zakken. Heb zelf een waarde ingevuld, aangezien ik denk dat de 'goTo()' methode niet werkt voor de z-motor?
+		motorZ.rotateTo(-500);//z-as laten zakken. Heb zelf een waarde ingevuld, aangezien ik denk dat de 'goTo()' methode niet werkt voor de z-motor?
 		motorX.goTo(0, 4);
 		motorZ.rotateTo(0);
 	}
@@ -884,7 +959,7 @@ public class XYMap {
 						}
 						
 			motorX.goTo(0, 4); 
-			motorZ.rotateTo(-360);
+			motorZ.rotateTo(-500);
 			motorX.goTo(xResolution, 4);
 			motorZ.rotateTo(0);
 		}
@@ -939,7 +1014,7 @@ public class XYMap {
 					}
 					
 		motorY.goTo(yResolution, 4); 
-		motorZ.rotateTo(-360);
+		motorZ.rotateTo(-500);
 		motorY.goTo(0, 4);
 		motorZ.rotateTo(0);
 	}
@@ -994,7 +1069,7 @@ public class XYMap {
 						}
 						
 			motorY.goTo(0, 4); 
-			motorZ.rotateTo(-360);
+			motorZ.rotateTo(-500);
 			motorY.goTo(yResolution, 4);
 			motorZ.rotateTo(0);
 		}

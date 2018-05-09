@@ -33,17 +33,17 @@ public class ShapeRecognition {
 		
 	//***MAP INIT	
 		
-		int pixelDimensionInMM = 10;					//defines a square pixel of x by x
-		double maxDistanceXInMM = 150.0; 			//maximum x and y-length of physical matrix [in mm]
-		double maxDistanceYInMM = 120.0;
-		double maxDistanceZInMM = 32.0;
+		int pixelDimensionInMM = 4;					//defines a square pixel of x by x
+		double maxDistanceXInMM = 130.0; 			//maximum x and y-length of physical matrix [in mm]
+		double maxDistanceYInMM = 130.0;
+		double maxDistanceZInMM = 35.0;
 		
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
 		int yResolution = (int) maxDistanceYInMM/pixelDimensionInMM;	
 		
 		XYMap map = new XYMap(xResolution, yResolution);
 
-		int scanningSensorHeight = 5;
+		int scanningSensorHeight = 3;
 		
 	//***MOTORS INIT
 	
@@ -81,14 +81,14 @@ public class ShapeRecognition {
 		
 			Thread homeX = new Thread() {
 				public void run() {
-						motorX.home(eindeloopX);
+						motorX.home(eindeloopX, 30);
 					
 				}
 			};
 				
 			Thread homeY = new Thread() {
 				public void run() {
-						motorY.home(eindeloopY);
+						motorY.home(eindeloopY, 0);
 				}
 			};
 			
@@ -124,7 +124,7 @@ public class ShapeRecognition {
 		
 		System.out.println("Scanheight is SET");
 		
-		map.scan(motorX, motorY, sensor1);   
+		map.scan(motorX, motorY, sensor1, eindeloopX);   
 		motorZ.rotateTo(0); 
 		
 		
@@ -196,6 +196,7 @@ public class ShapeRecognition {
 		shapeObj.internalAngleCorner();
 		System.out.print("shape: "); 
 		String shape = shapeObj.determineShape();
+		System.out.println();
 		ArrayList<Coordinates> corners = shapeObj.getCorner();
 		
 	//***EDGE TRACKING + SORTING Routine
