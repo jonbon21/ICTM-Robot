@@ -33,9 +33,9 @@ public class ShapeRecognition {
 		
 	//***MAP INIT	
 		
-		int pixelDimensionInMM = 4;					//defines a square pixel of x by x
-		double maxDistanceXInMM = 160.0; 			//maximum x and y-length of physical matrix [in mm]
-		double maxDistanceYInMM = 140.0;
+		int pixelDimensionInMM = 7;					//defines a square pixel of x by x
+		double maxDistanceXInMM = 150.0; 			//maximum x and y-length of physical matrix [in mm]
+		double maxDistanceYInMM = 100.0;
 		double maxDistanceZInMM = 35.0;
 		
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
@@ -197,6 +197,7 @@ public class ShapeRecognition {
 		printInt(shapeObj.getArrayCorner(dimX, dimY));
 		shapeObj.internalAngleCorner();
 		String shape = shapeObj.determineShape(dimX,dimY);
+		System.out.println("shape = " + shape);
 		System.out.println();
 		if("semicircle".equals(shape)) {
 			System.out.println("final corners");
@@ -212,55 +213,35 @@ public class ShapeRecognition {
 		
 		
 		sensor1.setFloodLight(true);
-		map.trackCross(motorX, motorY, corners);
+		map.track(motorX, motorY, corners);
 		sensor1.setFloodLight(false);
 		
-		System.out.println("Press to start SORTING");
-		Button.waitForAnyPress();
-		map.sortTriangle(motorX, motorY, motorZ, corners);
-		
-		/*switch (shape) {       //triangle = -x direction, square = +x, plus-sign = y)
+		switch (shape) {       //triangle = -x direction, square = +x, plus-sign = y)
 			case "triangle" :
-				sensor1.setFloodLight(true);
-				map.trackTriangle(motorX, motorY, corners);
-				sensor1.setFloodLight(false);
-				
 				System.out.println("Press to start SORTING");
 				Button.waitForAnyPress();
 				map.sortTriangle(motorX, motorY, motorZ, corners);
 				break;
 				
 			case "square" : 
-				sensor1.setFloodLight(true);
-				map.trackSquare(motorX, motorY, corners);
-				sensor1.setFloodLight(false);
-				
 				System.out.println("Press to start SORTING");
 				Button.waitForAnyPress();
 				map.sortSquare(motorX, motorY, motorZ, corners);
 				break;
 				
 			case "cross" : 
-				sensor1.setFloodLight(true);
-				map.trackCross(motorX, motorY, corners);
-				sensor1.setFloodLight(false);
-				
 				System.out.println("Press to start SORTING");
 				Button.waitForAnyPress();
 				map.sortCross(motorX, motorY, motorZ, corners);
 				break;
 				
 			case "semicircle" : 
-				sensor1.setFloodLight(true);
-				map.trackSemicircle(motorX, motorY, corners);
-				sensor1.setFloodLight(false);
-				
 				System.out.println("Press to start SORTING");
 				Button.waitForAnyPress();
 				map.sortSemicircle(motorX, motorY, motorZ, corners);
 				break;
 		}
-		*/
+		
 		
 	//***END OF PROGRAM	
 		lcd.clear();

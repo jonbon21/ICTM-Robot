@@ -114,10 +114,10 @@ public class XYMap {
 		//SCANNING
 		for(int i=0;i<yResolution;i++) {
 			
-			Delay.msDelay(100);
+			//Delay.msDelay(100);
 			motorX.home(eindeloop,30);
 			motorY.goTo(i, 4);
-			Delay.msDelay(100);
+			//Delay.msDelay(100);
 			System.out.println();
 			
 			for(int j=0;j<xResolution; j++) {
@@ -559,7 +559,7 @@ public class XYMap {
 		
 }	
 	
-	public void trackCross(final Motor motorX, final Motor motorY, ArrayList <Coordinates> corners){
+	public void track (final Motor motorX, final Motor motorY, ArrayList <Coordinates> corners){
 		final Coordinates a,d;
 		final int speedInPixelsPerS = 4;
 	
@@ -578,7 +578,7 @@ public class XYMap {
 		final int speedXAD = (int) Math.abs((distanceXAD/motionTimeAD));  
 		final int speedYAD = (int) Math.abs((distanceYAD/motionTimeAD));
 		
-		System.out.println("Tracking Cross");
+		System.out.println("Tracking");
 
 	// go to first point 	
 		System.out.println("Press to go to first point");
@@ -914,7 +914,7 @@ public class XYMap {
 			int sumX=0;
 			int sumY=0;		
 			
-				for(int i=0 ; i<4; i++) {
+				for(int i=0 ; i<(corners.size()-1); i++) {
 					final Coordinates z;
 					
 					z=corners.get(i);
@@ -923,8 +923,8 @@ public class XYMap {
 					sumY = sumY +z.getY();
 				}
 				
-			final int centreOfGravityX = sumX/4; 
-			final int centreOfGravityY = sumY/4; 
+			final int centreOfGravityX = sumX/corners.size(); 
+			final int centreOfGravityY = sumY/corners.size(); 
 			
 			Thread gotoCentreOfGravityX = new Thread() {
 				public void run() {
@@ -969,7 +969,7 @@ public class XYMap {
 		int sumX=0;
 		int sumY=0;		
 		
-			for(int i=0 ; i<12; i++) {
+			for(int i=0 ; i<(corners.size()-1); i++) {
 				final Coordinates z;
 				
 				z=corners.get(i);
@@ -978,8 +978,8 @@ public class XYMap {
 				sumY = sumY +z.getY();
 			}
 			
-		final int centreOfGravityX = sumX/12; 
-		final int centreOfGravityY = sumY/12; 
+		final int centreOfGravityX = sumX/corners.size(); 
+		final int centreOfGravityY = sumY/corners.size(); 
 		
 		Thread gotoCentreOfGravityX = new Thread() {
 			public void run() {
@@ -1024,7 +1024,7 @@ public class XYMap {
 			int sumX=0;
 			int sumY=0;		
 			
-				for(int i=0 ; i<5; i++) {
+				for(int i=0 ; i<(corners.size()-1); i++) {
 					final Coordinates z;
 					
 					z=corners.get(i);
@@ -1033,8 +1033,8 @@ public class XYMap {
 					sumY = sumY +z.getY();
 				}
 				
-			final int centreOfGravityX = sumX/5; 
-			final int centreOfGravityY = sumY/5; 
+			final int centreOfGravityX = sumX/corners.size(); 
+			final int centreOfGravityY = sumY/corners.size(); 
 			
 			Thread gotoCentreOfGravityX = new Thread() {
 				public void run() {
