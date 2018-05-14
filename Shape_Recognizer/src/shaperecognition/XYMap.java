@@ -167,7 +167,7 @@ public class XYMap {
 
 		a = corners.get(0);
 		b = corners.get(1);
-		c = corners.get(2);
+		c = corners.get(corners.size()-1);
 		
 		double distanceXBA = Math.abs(b.getX() - a.getX());
 		double distanceYBA = Math.abs(b.getY() - a.getY());
@@ -566,7 +566,7 @@ public class XYMap {
 		double motionTimeAD = 0;
 		
 		a = corners.get(0);
-		d = corners.get(11);
+		d = corners.get(corners.size()-1);
 		
 		double distanceXAD = Math.abs(a.getX() - d.getX());
 		double distanceYAD = Math.abs(a.getY() - d.getY());
@@ -616,7 +616,7 @@ public class XYMap {
 					}
 		Delay.msDelay(2000);
 	// cycle through the other points
-		for(int i=0;i<11; i++) {			
+		for(int i=0;i<(corners.size()-1); i++) {			
 			final Coordinates k,l;
 			double motionTime = 0;
 			
@@ -859,7 +859,7 @@ public class XYMap {
 		int sumX=0;
 		int sumY=0;		
 		
-			for(int i=0 ; i<3; i++) {
+			for(int i=0 ; i<(corners.size()-1); i++) {
 				final Coordinates z;
 				
 				z=corners.get(i);
@@ -868,8 +868,8 @@ public class XYMap {
 				sumY = sumY +z.getY();
 			}
 			
-		final int centreOfGravityX = sumX/3; //zwaartepuntX = (x1+x2+x3)/3
-		final int centreOfGravityY = sumY/3; //zwaartepuntY = (y1+y2+y3)/3
+		final int centreOfGravityX = sumX/corners.size(); //zwaartepuntX = (x1+x2+x3)/3
+		final int centreOfGravityY = sumY/corners.size(); //zwaartepuntY = (y1+y2+y3)/3
 		
 		Thread gotoCentreOfGravityX = new Thread() {
 			public void run() {

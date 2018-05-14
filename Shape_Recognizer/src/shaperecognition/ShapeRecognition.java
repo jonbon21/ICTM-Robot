@@ -34,8 +34,8 @@ public class ShapeRecognition {
 	//***MAP INIT	
 		
 		int pixelDimensionInMM = 4;					//defines a square pixel of x by x
-		double maxDistanceXInMM = 130.0; 			//maximum x and y-length of physical matrix [in mm]
-		double maxDistanceYInMM = 130.0;
+		double maxDistanceXInMM = 160.0; 			//maximum x and y-length of physical matrix [in mm]
+		double maxDistanceYInMM = 140.0;
 		double maxDistanceZInMM = 35.0;
 		
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
@@ -43,7 +43,7 @@ public class ShapeRecognition {
 		
 		XYMap map = new XYMap(xResolution, yResolution);
 
-		int scanningSensorHeight = 3;
+		int scanningSensorHeight = 10;
 		
 	//***MOTORS INIT
 	
@@ -210,7 +210,16 @@ public class ShapeRecognition {
 		System.out.println("Press any key to start EDGE TRACKING");
 		Button.waitForAnyPress();
 		
-		switch (shape) {       //triangle = -x direction, square = +x, plus-sign = y)
+		
+		sensor1.setFloodLight(true);
+		map.trackCross(motorX, motorY, corners);
+		sensor1.setFloodLight(false);
+		
+		System.out.println("Press to start SORTING");
+		Button.waitForAnyPress();
+		map.sortTriangle(motorX, motorY, motorZ, corners);
+		
+		/*switch (shape) {       //triangle = -x direction, square = +x, plus-sign = y)
 			case "triangle" :
 				sensor1.setFloodLight(true);
 				map.trackTriangle(motorX, motorY, corners);
@@ -251,7 +260,7 @@ public class ShapeRecognition {
 				map.sortSemicircle(motorX, motorY, motorZ, corners);
 				break;
 		}
-		
+		*/
 		
 	//***END OF PROGRAM	
 		lcd.clear();
