@@ -155,7 +155,7 @@ public class ShapeRecognition {
 		shape shapeObj = new shape(zoneLargest);
 		Coordinates start = new Coordinates(shapeObj.findBoundPoint());
 		shapeObj.findBound(dimX,dimY,start);
-		System.out.println("rand grootste zone");
+		System.out.println("edge largest zone");
 		printInt(shapeObj.getArrayBound(dimX,dimY));
 		shapeObj.direction();
 		///System.out.println("orientatie vectoren");
@@ -189,16 +189,21 @@ public class ShapeRecognition {
 		//System.out.println(P1.getAngle(P2));
 		//System.out.println(shapeObj.getBoundEl());
 		shapeObj.calcLines();
-		shapeObj.calcLineRot(true);
-		///System.out.println("print lines");
-		///printInt(shapeObj.getArrayInt(shapeObj.getLines(),dimX,dimY));
+		shapeObj.calcLineRot(true,dimX,dimY); //set mergeLines on or off
+		System.out.println("lines");
+		printInt(shapeObj.getArrayInt(shapeObj.getLines(),dimX,dimY));
+		System.out.println();
+		System.out.println("corners");
 		printInt(shapeObj.getArrayCorner(dimX, dimY));
 		shapeObj.internalAngleCorner();
-		System.out.print("shape: "); 
-		String shape = shapeObj.determineShape();
+		String shape = shapeObj.determineShape(dimX,dimY);
 		System.out.println();
+		if("semicircle".equals(shape)) {
+			System.out.println("final corners");
+			printInt(shapeObj.getArrayCorner(dimX, dimY));
+		}
 		ArrayList<Coordinates> corners = shapeObj.getCorner();
-		
+
 	//***EDGE TRACKING + SORTING Routine
 		lcd.clear();
 		lcd.refresh();

@@ -2,7 +2,7 @@ package shaperecognition;
 
 import java.util.ArrayList;
 
-public class shape extends zone{
+class shape extends zone{
 	private ArrayList<Coordinates> boundary = new ArrayList<Coordinates>();
 	private double [] direction = new double[0]; 
 	private double [] rotation = new double[0];
@@ -155,13 +155,8 @@ public class shape extends zone{
 			rotation[i] = val;
 		}
 	}
-	public String determineShape() {
+	public String determineShape(int dimX, int dimY) {
 		double internalAngleSum = 0; int nConcave = 0; String res = "shape";
-		//int idMax = 0;int boundId = 0; double Cx = 0; double Cy; int[] shapeRec = new int[4]; double maxL = 0; 
-		//0: driehoek
-		//1: vierkant
-		//2: kruis
-		//3: halve cirkel
 		for (int i=0;i<cornerInternal.size();i++) {
 			internalAngleSum += cornerInternal.get(i);
 		}
@@ -170,41 +165,14 @@ public class shape extends zone{
 				nConcave++;
 			}
 		}
-		/*for (int i=1;i<lineLastPointId.size()+1;i++) {
-			if( boundary.get(lineLastPointId.get(i-1)+1).getDist(boundary.get(lineLastPointId.get(i%lineLastPointId.size()))) > maxL){
-				maxL = corner.get(i-1).getDist(corner.get(i%corner.size()));
-				boundId = lineLastPointId.get(i-1)+1;}
+		double[] distance = new double[corner.size()];
+		for (int i=1;i<corner.size()+1;i++) {
+			distance[i-1] = corner.get(i-1).getDist(corner.get(i%corner.size()));
 		}
-		//som  interne hoeken
-		if ((135*(2*Math.PI/360) <= internalAngleSum) && (internalAngleSum <= 225*(2*Math.PI/360))) {
-			shapeRec[1]++; 
+		boolean equalLength = true;
+		for (int i=0;i<distance.length;i++) {
+			if(Math.abs(distance[0]-distance[i])>0.2*distance[0]) {equalLength = false;}
 		}
-		if ((315*(2*Math.PI/360) <= internalAngleSum) && (internalAngleSum <= 405*(2*Math.PI/360))) {
-			shapeRec[2]++; 
-		}
-		if ((1710*(2*Math.PI/360) <= internalAngleSum) && (internalAngleSum <= 1890*(2*Math.PI/360))) {
-			shapeRec[3]++; 
-		}
-		//aantal hoeken
-		if(cornerInternal.size()==3) {
-			shapeRec[1]++;
-		}
-		if(cornerInternal.size()==4) {
-			shapeRec[2]++;
-		}
-		if(cornerInternal.size()>=11) {
-			shapeRec[3]++;
-		}
-		for(int i=0;i<shapeRec.length;i++) {
-			if(shapeRec[i]>shapeRec[idMax]) {idMax = i;}
-		}
-		switch(idMax) {
-		case 0: System.out.println("triangle");break;
-		case 1: System.out.println("square");break;
-		case 3: System.out.println("cross");break;
-		case 4: System.out.println("semi-circle");break;
-		default: System.out.println("error");
-		}*/
 		boolean keepGoing = true;
 	    int k = 1;
 		while(keepGoing)
@@ -227,12 +195,47 @@ public class shape extends zone{
 		            break;
 		        case 3: 
 		        	if( (cornerInternal.size()==4) && (315*(2*Math.PI/360) <= internalAngleSum) && (internalAngleSum <= 405*(2*Math.PI/360)) ){
+		        		if(equalLength == true) {
 		        		System.out.print("square");
 		        		res = "square";
 		        		keepGoing = false;
+		        		}
 		        	}
 		        	break;
 		        case 4: 
+		        	int idMax = 0, idQ = 0, nCirPoints = 5; double xMid = 0, yMid = 0, radius = 0, pQOrientation = 0; 
+		        	Coordinates cornerA, cornerB; double cornerBNewX,cornerBNewY, pQnewX, pQnewY;
+		        	for (int i=0;i<distance.length;i++) {
+		    			if((distance[i] - distance[idMax])>0) {idMax = i;}
+		    		}
+		        	cornerA = corner.get(idMax);
+		        	cornerB = corner.get((idMax+1)%corner.size());
+		        	xMid = (cornerA.getX() + cornerB.getX())/2;
+		        	yMid = (cornerA.getY() + cornerB.getY())/2;
+		        	radius = Math.sqrt(Math.pow(yMid - cornerB.getY(), 2) + Math.pow(xMid - cornerB.getX(), 2));
+		        	for (int i=0;i<corner.size();i++) {
+		    			if((i != idMax)&&(i != idMax+1)) {
+		    				idQ = i;
+		    				break;
+		    			}
+		    		}
+		        	cornerBNewX = cornerB.getX()-xMid; 	cornerBNewY = cornerB.getY()-yMid;
+		        	pQnewX = corner.get(idQ).getX()-xMid; pQnewY = corner.get(idQ).getY()-yMid;
+		        	pQOrientation = cornerBNewX*pQnewY - cornerBNewY*pQnewX;
+		        	corner.clear();
+		        	corner.add(cornerA); corner.add(cornerB);
+		        	double vectorRot = Math.PI/(nCirPoints+1), ss = pQOrientation/Math.abs(pQOrientation);
+		        	for(int i=1; i<nCirPoints+1;i++) {
+		        		int rrx,rry;
+		        		rrx = (int) Math.round((Math.cos(ss*i*vectorRot)*cornerBNewX - Math.sin(ss*i*vectorRot)*cornerBNewY) + xMid);
+		        	    rry = (int) Math.round((Math.sin(ss*i*vectorRot)*cornerBNewX + Math.cos(ss*i*vectorRot)*cornerBNewY) + yMid);
+		        	    if(rrx <0) {rrx = 0;}
+		    			if(rry <0) {rry = 0;}
+		    			if(rrx >= dimX) {rrx = dimX-1;}
+		    			if(rry >= dimY) {rry = dimY-1;} 
+		        	    //System.out.println("xcircle:" +rrx+ " ycircle: " +rry);
+		        	    corner.add(new Coordinates(rrx,rry));
+		        	}
 		        	System.out.print("semicircle");
 		        	res = "semicircle";
 		        	keepGoing = false;
@@ -242,46 +245,33 @@ public class shape extends zone{
 		 } 
 	return res;
 	}
-	public void calcLineRot(boolean optMerge) {
-		//ArrayList<Double> lineRot = new ArrayList<Double>();
-		double rSum = 0; int idEnd = 0; int nv = 0;
-		double rotC = 0; int lineTol = 2; double rotCI = 0; double tol = 0.00001; boolean ffl = false; //FoundFirstLine
+	public void calcLineRot(boolean optMerge, int dimX, int dimY) {
 		boolean mergeLines = true; int mergeId = 0; 
+		ArrayList <double[]> regLines = new ArrayList<double[]>();
 		while(mergeLines == true) {
-			ffl = false;
-			for(int i = 0; i<lines.length+nv; i++) {
+			for(int i = 0; i<lines.length; i++) {
 				if( Math.abs(lines[(i+1)%lines.length]-lines[i%lines.length]) > 0.5 ){
 					lineLastPointId.add(i); 
-					if( ffl == false ) {nv = i; ffl = true;} //geval waarbij lijn 1 start op index 0
-					corner.add(new Coordinates(boundary.get(i).getX(),boundary.get(i).getY()));
 				}
 			}
 			for (int i=1; i < lineLastPointId.size()+1; i++) {
-						rotCI = 0;
-						if (Math.abs(rotation[lineLastPointId.get((i-1))+1]) < tol) {rotC = 0;}
-						else {
-							for(int k = 1;k <= lineTol;k++) {
-								rotCI = rotCI + (rotCI + rotation[(lineLastPointId.get(i-1)+1+k)%rotation.length]);
-							}
-							rotCI = rotCI/(lineTol+1);
-							rotC = - Math.signum(rotCI) * Math.round(Math.abs(rotCI)/(Math.PI/4)) * (Math.PI/4);
-						}
-				rSum = rotC;
-				//System.out.println("rotC: " +rotC);
-				//System.out.println("id: " +lineLastPointId.get(i));
-				if(i+1 < lineLastPointId.size()) {idEnd = lineLastPointId.get(i+1)-1;}
-				else {idEnd = lineLastPointId.get((i+1)%lineLastPointId.size())-1 + rotation.length;}
-				for(int j=( lineLastPointId.get(i-1)+2 ); j <= idEnd; j++) {
-					//System.out.println("rotation: " +rotation[j%rotation.length]);
-					rSum += rotation[j%rotation.length];
-				}
-				cornerRotation.add(rSum);
-				System.out.println("rotation corner: " +rSum);
-				//lineRot.add(rSum);
+			int firstPointLine = (lineLastPointId.get(i-1)+1)%this.getBoundEl();	
+			int lastPointLine = lineLastPointId.get((i)%lineLastPointId.size());
+			double[] newRegLine = linearRegression(firstPointLine,lastPointLine);
+			regLines.add(newRegLine);
+			//System.out.println("line: " +newRegLine[3]);
+			//System.out.println("intercept: " +newRegLine[0]);
+			//System.out.println("slope: " +newRegLine[1]);
+			//System.out.println("quadrant: " +newRegLine[2]);
 			}
-			mergeLines = false;
+			for(int i=0;i<regLines.size();i++) {
+			cornerRotation.add(calcCornerRotReg(regLines.get(i),regLines.get((i+1)%regLines.size())));
+			corner.add(calcCornerReg(regLines.get(i),regLines.get((i+1)%regLines.size()),dimX,dimY));
+			System.out.println("rotation regression: "+cornerRotation.get(i));
+			}	
+			mergeLines = false; mergeId = 0;
 			for(int i = 0; i<cornerRotation.size(); i++) {
-				if((cornerRotation.get(i) <= 45*(2*Math.PI/360))&& (optMerge == true)) {
+				if((Math.abs(cornerRotation.get(i)) <= 30*(2*Math.PI/360))&& (optMerge == true)) {
 					mergeLines = true;
 					if(cornerRotation.get(i)< cornerRotation.get(mergeId)) {
 						mergeId = i;
@@ -290,20 +280,19 @@ public class shape extends zone{
 			}
 			if(mergeLines == true) {
 				for(int j = 0; j<lines.length; j++) {
-					if(lines[j] == lines[lineLastPointId.get(mergeId)]) {
-					lines[j] = 	lines[lineLastPointId.get((mergeId+1)%lineLastPointId.size())];	
+					if(lines[j] == (int)regLines.get(mergeId)[3]) {
+					lines[j] = 	(int)regLines.get((mergeId+1)%regLines.size())[3];
+					System.out.println("mergLine: "+(int)regLines.get((mergeId)%regLines.size())[3]);
+					System.out.println("mergLine: "+(int)regLines.get((mergeId+1)%regLines.size())[3]);
 					}	
 				}
 				lineLastPointId.clear();
 				cornerRotation.clear();
 				corner.clear();
+				regLines.clear();
 				System.out.println("linesMerged");
 			}
 		}
-		//Double[] rtn= lineRot.toArray(new Double[lineRot.size()]);
-		//System.out.println(boundary.get(31).getX());
-		//System.out.println(boundary.get(31).getY());
-		//return rtn;
 	}
 	public Coordinates findBoundPoint() {
 		int id_xMax = 0; int xMax = 0;
@@ -419,5 +408,104 @@ public class shape extends zone{
 			count++;
 		}
 	}
+	public double[] linearRegression(int lineIdFirst, int lineIdLast) {
+		//DEMING regression (smallest distance)
+	    	double intercept, slope; double[] res = new double[4]; 
+	    	int[] x,y; int nPoints = 0; //double meanDir = 0;
+	    	res[3] = lines[lineIdLast];
+	    	if ((lineIdLast + this.getBoundEl() - lineIdFirst) > this.getBoundEl()) {
+	    		nPoints = lineIdLast - lineIdFirst + 1;
+	    	}
+	    	else
+	    	{
+	    		nPoints = this.getBoundEl() + lineIdLast - lineIdFirst + 1;
+	    	}
+	    	x = new int[nPoints]; y = new int[nPoints];
+	    	for(int i=0;i<nPoints;i++) {
+	    		x[i]= boundary.get((lineIdFirst+i)%this.getBoundEl()).getX();
+	    	    y[i]= boundary.get((lineIdFirst+i)%this.getBoundEl()).getY();
+	    	}
+	    	//for(int i=0;i<nPoints-1;i++) {
+	    	//	res[2] += direction[(lineIdFirst+i)%this.getBoundEl()]/(nPoints-1);
+	    	//}
+	        if (x.length != y.length) {
+	            throw new IllegalArgumentException("array lengths are not equal");
+	        }
+	        
+	        int n = x.length;
+	        // first pass
+	        double sumx = 0.0, sumy = 0.0; //, sumx2 = 0.0;
+	        for (int i = 0; i < n; i++) {
+	            sumx  += x[i];
+	            //sumx2 += x[i]*x[i];
+	            sumy  += y[i];
+	        }
+	        double xbar = sumx / n;
+	        double ybar = sumy / n;
+	        double Sxx = 0,Syy = 0,Sxy = 0, nomS = 0, denomS = 0;
+	        for (int i = 0; i < n; i++) {
+	        Sxx += (x[i]-xbar)*(x[i]-xbar);
+	        Syy += (y[i]-ybar)*(y[i]-ybar);
+	        Sxy += (x[i]-xbar)*(y[i]-ybar);
+	        }
+	        Sxx = Sxx / (n-1);
+	        Syy = Syy / (n-1);
+	        Sxy = Sxy / (n-1);
+	        nomS = Syy - Sxx + Math.sqrt((Syy-Sxx)*(Syy-Sxx) + 4*Sxy*Sxy); 
+	        denomS = 2*Sxy;
+	        double ss = 1;
+	        if (Math.abs(denomS) < Math.pow(10, -5)) {
+		        if (Math.abs(denomS) > 0) {
+		        	ss = denomS/Math.abs(denomS);
+		        }
+	        denomS = ss * Math.pow(10, -5);
+	        }
+	        //System.out.println("check denomS: " +denomS+ "check nomS: " +nomS);
+	        slope  = nomS/denomS;
+	        intercept = ybar - slope * xbar;
+	        if(slope >= 1) {
+	        	if((boundary.get(lineIdLast).getY()-boundary.get(lineIdFirst).getY()) >= 0) {res[2] = 1;} 
+	        	else {res[2] = 3;}
+	        }
+	        if( (slope < 1)&&(slope >= 0) ) {
+		        if((boundary.get(lineIdLast).getX()-boundary.get(lineIdFirst).getX()) >= 0) {res[2] = 1;} 
+		        else {res[2] = 3;}
+	        }
+	        if( (slope < 0)&&(slope >= -1) ) {
+	        	if((boundary.get(lineIdLast).getX()-boundary.get(lineIdFirst).getX()) >= 0) {res[2] = 4;} 
+	        	else {res[2] = 2;}
+            }
+	        if(slope < -1){
+	        	if((boundary.get(lineIdLast).getY()-boundary.get(lineIdFirst).getY()) >= 0) {res[2] = 2;} 
+	        	else {res[2] = 4;}
+            }
+	        res[0] = intercept; res[1] = slope;
+	        return res;
+	    }
+		public double calcCornerRotReg(double[] lineA, double[] lineB) {
+			double res = 0, angleA = 0, angleB = 0;
+			if(lineA[1] >= 0) {angleA = Math.atan(lineA[1])+(lineA[2]-1)*Math.PI/2;}
+			else {angleA = Math.atan(lineA[1]) + Math.PI/2 +(lineA[2]-1)*Math.PI/2;}
+			if(lineB[1] >= 0) {angleB = Math.atan(lineB[1])+(lineB[2]-1)*Math.PI/2;}
+			else {angleB = Math.atan(lineB[1]) + Math.PI/2 +(lineB[2]-1)*Math.PI/2;}
+			res = angleB - angleA;
+			if (res < - Math.PI) { res += 2*Math.PI;}
+			if (res >   Math.PI) { res -= 2*Math.PI;}
+			return res;
+		}
+		public Coordinates calcCornerReg(double[] lineA, double[] lineB, int dimX, int dimY) {
+			int xCoord = 0, yCoord = 0; double xSec =0, ySec = 0;
+			xSec = (lineB[0]-lineA[0])/(lineA[1]-lineB[1]);
+			ySec = lineA[0] + lineA[1]*xSec;
+			
+			xCoord = (int) Math.round(xSec);
+			yCoord = (int) Math.round(ySec);
+			//System.out.println("X: " +xCoord+ " Y: " +yCoord);
+			if(xCoord <0) {xCoord = 0;}
+			if(yCoord <0) {yCoord = 0;}
+			if(xCoord >= dimX) {xCoord = dimX-1;}
+			if(yCoord >= dimY) {yCoord = dimY-1;}
+			return new Coordinates(xCoord,yCoord);
+		}
 }	
 		
