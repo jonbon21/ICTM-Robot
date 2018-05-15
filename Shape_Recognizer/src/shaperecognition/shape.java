@@ -171,7 +171,7 @@ class shape extends zone{
 		}
 		boolean equalLength = true;
 		for (int i=0;i<distance.length;i++) {
-			if(Math.abs(distance[0]-distance[i])>0.2*distance[0]) {equalLength = false;}
+			if(Math.abs(distance[0]-distance[i])>0.3*distance[0]) {equalLength = false;}
 		}
 		boolean keepGoing = true;
 	    int k = 1;

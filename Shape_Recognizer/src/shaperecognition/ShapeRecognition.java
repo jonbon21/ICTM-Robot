@@ -33,9 +33,9 @@ public class ShapeRecognition {
 		
 	//***MAP INIT	
 		
-		int pixelDimensionInMM = 7;					//defines a square pixel of x by x
+		int pixelDimensionInMM = 10;					//defines a square pixel of x by x
 		double maxDistanceXInMM = 150.0; 			//maximum x and y-length of physical matrix [in mm]
-		double maxDistanceYInMM = 100.0;
+		double maxDistanceYInMM = 130.0;
 		double maxDistanceZInMM = 35.0;
 		
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
@@ -197,13 +197,13 @@ public class ShapeRecognition {
 		printInt(shapeObj.getArrayCorner(dimX, dimY));
 		shapeObj.internalAngleCorner();
 		String shape = shapeObj.determineShape(dimX,dimY);
-		System.out.println("shape = " + shape);
 		System.out.println();
 		if("semicircle".equals(shape)) {
 			System.out.println("final corners");
 			printInt(shapeObj.getArrayCorner(dimX, dimY));
 		}
 		ArrayList<Coordinates> corners = shapeObj.getCorner();
+		System.out.println("shape = " + shape);
 
 	//***EDGE TRACKING + SORTING Routine
 		lcd.clear();

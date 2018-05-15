@@ -16,7 +16,7 @@ public class Motor extends EV3LargeRegulatedMotor {
 	Boolean isHomed = false;
 	Boolean homingBusy = false;
 	String motorName;
-	int homingSpeed = 150;		//in degrees/s
+	int homingSpeed = 250;		//in degrees/s
 	double degreesPerActUnit;
 	
 

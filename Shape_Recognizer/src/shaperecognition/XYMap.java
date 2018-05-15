@@ -109,15 +109,24 @@ public class XYMap {
 		
 		//SENSOR SETUP
 		sensor.setColorIdMode();
-		int homingColor = sensor.getColorID();
+		int ObjectColor = sensor.getColorID();
+		//int ObjectColor = 0 ;
+		Delay.msDelay(2000);
+		if(ObjectColor == 0) {
+		System.out.println("ObjectColor = Red");
+		}
+		else {
+			System.out.println("OBJECTCOLOR ERROR");
+		}
+		Button.waitForAnyPress();
 
 		//SCANNING
 		for(int i=0;i<yResolution;i++) {
 			
-			//Delay.msDelay(100);
+			Delay.msDelay(100);
 			motorX.home(eindeloop,30);
 			motorY.goTo(i, 4);
-			//Delay.msDelay(100);
+			Delay.msDelay(100);
 			System.out.println();
 			
 			for(int j=0;j<xResolution; j++) {
@@ -137,14 +146,14 @@ public class XYMap {
 				//motorX.stop();
 				
 				Delay.msDelay(100);
-				if(sensor.getColorID()== homingColor) {
-					xyMap[j][i]=0;
-					System.out.print("0");
+				if(sensor.getColorID()== ObjectColor) {
+					xyMap[j][i]=1;
+					System.out.print("X");
 				} 
 				
 				else {
-					xyMap[j][i]=1;
-					System.out.print("X");
+					xyMap[j][i]=0;
+					System.out.print("0");
 				}
 				
 			} //for j
@@ -859,7 +868,7 @@ public class XYMap {
 		int sumX=0;
 		int sumY=0;		
 		
-			for(int i=0 ; i<(corners.size()-1); i++) {
+			for(int i=0 ; i<(corners.size()); i++) {
 				final Coordinates z;
 				
 				z=corners.get(i);
@@ -914,7 +923,7 @@ public class XYMap {
 			int sumX=0;
 			int sumY=0;		
 			
-				for(int i=0 ; i<(corners.size()-1); i++) {
+				for(int i=0 ; i<(corners.size()); i++) {
 					final Coordinates z;
 					
 					z=corners.get(i);
@@ -969,7 +978,7 @@ public class XYMap {
 		int sumX=0;
 		int sumY=0;		
 		
-			for(int i=0 ; i<(corners.size()-1); i++) {
+			for(int i=0 ; i<(corners.size()); i++) {
 				final Coordinates z;
 				
 				z=corners.get(i);
@@ -1024,7 +1033,7 @@ public class XYMap {
 			int sumX=0;
 			int sumY=0;		
 			
-				for(int i=0 ; i<(corners.size()-1); i++) {
+				for(int i=0 ; i<(corners.size()); i++) {
 					final Coordinates z;
 					
 					z=corners.get(i);
