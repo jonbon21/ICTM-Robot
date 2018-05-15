@@ -1,7 +1,6 @@
 package shaperecognition;
 
 import java.util.ArrayList;
-
 class shape extends zone{
 	private ArrayList<Coordinates> boundary = new ArrayList<Coordinates>();
 	private double [] direction = new double[0]; 
@@ -168,6 +167,7 @@ class shape extends zone{
 		double[] distance = new double[corner.size()];
 		for (int i=1;i<corner.size()+1;i++) {
 			distance[i-1] = corner.get(i-1).getDist(corner.get(i%corner.size()));
+			System.out.println("afstand: "+distance[i-1]);
 		}
 		boolean equalLength = true;
 		for (int i=0;i<distance.length;i++) {
@@ -270,11 +270,21 @@ class shape extends zone{
 			System.out.println("rotation regression: "+cornerRotation.get(i));
 			}	
 			mergeLines = false; mergeId = 0;
-			for(int i = 0; i<cornerRotation.size(); i++) {
-				if((Math.abs(cornerRotation.get(i)) <= 30*(2*Math.PI/360))&& (optMerge == true)) {
+			for(int i = 0; i<regLines.size(); i++) {
+				if((int)regLines.get(i)[4]<= 2) {
 					mergeLines = true;
-					if(cornerRotation.get(i)< cornerRotation.get(mergeId)) {
+					if((int)regLines.get(i)[4]< (int)regLines.get(mergeId)[4]) {
 						mergeId = i;
+					}
+				}
+			}
+			if(mergeLines == false) {
+				for(int i = 0; i<cornerRotation.size(); i++) {
+					if((Math.abs(cornerRotation.get(i)) <= 30*(2*Math.PI/360))&& (optMerge == true)) {
+						mergeLines = true;
+						if(cornerRotation.get(i)< cornerRotation.get(mergeId)) {
+							mergeId = i;
+						}
 					}
 				}
 			}
@@ -410,7 +420,7 @@ class shape extends zone{
 	}
 	public double[] linearRegression(int lineIdFirst, int lineIdLast) {
 		//DEMING regression (smallest distance)
-	    	double intercept, slope; double[] res = new double[4]; 
+	    	double intercept, slope; double[] res = new double[5]; 
 	    	int[] x,y; int nPoints = 0; //double meanDir = 0;
 	    	res[3] = lines[lineIdLast];
 	    	if ((lineIdLast + this.getBoundEl() - lineIdFirst) > this.getBoundEl()) {
@@ -428,6 +438,7 @@ class shape extends zone{
 	    	//for(int i=0;i<nPoints-1;i++) {
 	    	//	res[2] += direction[(lineIdFirst+i)%this.getBoundEl()]/(nPoints-1);
 	    	//}
+	    	res[4] = nPoints;
 	        if (x.length != y.length) {
 	            throw new IllegalArgumentException("array lengths are not equal");
 	        }
@@ -508,4 +519,5 @@ class shape extends zone{
 			return new Coordinates(xCoord,yCoord);
 		}
 }	
+		
 		
