@@ -62,8 +62,8 @@ public class XYMap {
 			}
 			Thread contScanning = new Thread() {
 				public void run() {
-					while(motorX.getTachoCount()<=360) {
-					Delay.msDelay(50);
+					while(motorX.getTachoCount()<=390) { // xtacho net iets kleiner dan de maxX afstand zetten!
+					Delay.msDelay(25);
 					if(sensor.getColorID()== ObjectColor) {
 					scanline.add(1);
 					System.out.print(1);
@@ -77,10 +77,10 @@ public class XYMap {
 			};
 			Thread contMoving = new Thread() {
 				public void run() {
-					motorX.goTo(xResolution,5);
+					motorX.goTo(xResolution,10);
 					//System.out.println("Tachocount = " + motorX.getTachoCount());
 					}
-				};
+			};
 			Delay.msDelay(100);
 			motorX.home(eindeloop,30);
 			System.out.println();
@@ -118,7 +118,7 @@ public class XYMap {
 			nSample = (double) scan.get(i).size()/xResolution;
 			//System.out.println("nsample:" +nSample);
 			for(int j=0;j<xResolution;j++) {
-				for(int k=(int) Math.floor(j*nSample);k < (int) Math.ceil((j+1)*nSample);k++) {
+				for(int k=(int) Math.floor(j*nSample);k < (int) Math.ceil((j+1)*nSample-0.1);k++) {
 					//System.out.println("counter: "+ j);
 					//System.out.println("maxindex: " + Math.ceil((j+1)*nSample));
 					if(k == (int) Math.floor(j*nSample)) {
@@ -203,7 +203,7 @@ public class XYMap {
 
 	public void trackEdge (final Motor motorX, final Motor motorY, ArrayList <Coordinates> corners){
 		final Coordinates a,d;
-		final int speedInPixelsPerS = 4;
+		final int speedInPixelsPerS = 15;
 	
 		double motionTimeAD = 0;
 		

@@ -39,8 +39,8 @@ public class ShapeRecognition {
 		
 		
 		int pixelDimensionInMM = 2;					//defines a square pixel of x by x
-		double maxDistanceXInMM = 100.0; 			//maximum x and y-length of physical matrix [in mm]
-		double maxDistanceYInMM = 100.0;
+		double maxDistanceXInMM = 90.0; 			//maximum x and y-length of physical matrix [in mm]
+		double maxDistanceYInMM = 80.0;
 		double maxDistanceZInMM = 35.0;
 		
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
