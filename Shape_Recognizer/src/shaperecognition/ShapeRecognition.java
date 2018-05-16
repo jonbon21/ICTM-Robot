@@ -38,9 +38,9 @@ public class ShapeRecognition {
 		//medium cross: 120-120, steps of 3mm
 		
 		
-		int pixelDimensionInMM = 5;					//defines a square pixel of x by x
-		double maxDistanceXInMM = 160.0; 			//maximum x and y-length of physical matrix [in mm]
-		double maxDistanceYInMM = 150.0;
+		int pixelDimensionInMM = 2;					//defines a square pixel of x by x
+		double maxDistanceXInMM = 100.0; 			//maximum x and y-length of physical matrix [in mm]
+		double maxDistanceYInMM = 100.0;
 		double maxDistanceZInMM = 35.0;
 		
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:

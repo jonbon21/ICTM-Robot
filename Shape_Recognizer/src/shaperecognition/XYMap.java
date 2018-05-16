@@ -45,11 +45,24 @@ public class XYMap {
 		Button.waitForAnyPress();
 		//SCANNING
 		
+		
 		for(int i=0;i<yResolution;i++) {	
+			//System.out.print("counter =" + counter);
 			final ArrayList <Integer> scanline = new ArrayList<Integer>();
+			if(Button.ENTER.isDown()) {
+				for(int k=i; k<yResolution; k++) { 
+					ArrayList <Integer> scanline2 = new ArrayList<Integer>();
+
+					for(int j=0; j<100; j++) {
+						scanline2.add(0);
+					}
+					scan.add(scanline2);
+				}
+				break;
+			}
 			Thread contScanning = new Thread() {
 				public void run() {
-					while(motorX.getTachoCount()<=720) {
+					while(motorX.getTachoCount()<=360) {
 					Delay.msDelay(50);
 					if(sensor.getColorID()== ObjectColor) {
 					scanline.add(1);
@@ -64,7 +77,7 @@ public class XYMap {
 			};
 			Thread contMoving = new Thread() {
 				public void run() {
-					motorX.goTo(xResolution,3);
+					motorX.goTo(xResolution,5);
 					//System.out.println("Tachocount = " + motorX.getTachoCount());
 					}
 				};
