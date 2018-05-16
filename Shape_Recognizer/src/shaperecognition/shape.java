@@ -167,7 +167,6 @@ class shape extends zone{
 		double[] distance = new double[corner.size()];
 		for (int i=1;i<corner.size()+1;i++) {
 			distance[i-1] = corner.get(i-1).getDist(corner.get(i%corner.size()));
-			System.out.println("afstand: "+distance[i-1]);
 		}
 		boolean equalLength = true;
 		for (int i=0;i<distance.length;i++) {
@@ -247,7 +246,7 @@ class shape extends zone{
 	}
 	public void calcLineRot(boolean optMerge, int dimX, int dimY) {
 		boolean mergeLines = true; int mergeId = 0; 
-		ArrayList <double[]> regLines = new ArrayList<double[]>();
+		ArrayList <double[]> regLines = new ArrayList<double[]>(); int mm = 0;
 		while(mergeLines == true) {
 			for(int i = 0; i<lines.length; i++) {
 				if( Math.abs(lines[(i+1)%lines.length]-lines[i%lines.length]) > 0.5 ){
@@ -268,27 +267,30 @@ class shape extends zone{
 			cornerRotation.add(calcCornerRotReg(regLines.get(i),regLines.get((i+1)%regLines.size())));
 			corner.add(calcCornerReg(regLines.get(i),regLines.get((i+1)%regLines.size()),dimX,dimY));
 			System.out.println("rotation regression: "+cornerRotation.get(i));
-			}	
-			mergeLines = false; mergeId = 0;
+			}		
+			mergeLines = false; mergeId = 0; 
+			if(optMerge == true) {
 			for(int i = 0; i<regLines.size(); i++) {
 				if((int)regLines.get(i)[4]<= 2) {
 					mergeLines = true;
 					if((int)regLines.get(i)[4]< (int)regLines.get(mergeId)[4]) {
 						mergeId = i;
+
 					}
 				}
 			}
-			if(mergeLines == false) {
+			}
+			if((mergeLines == false) && (optMerge == true)) {
 				for(int i = 0; i<cornerRotation.size(); i++) {
-					if((Math.abs(cornerRotation.get(i)) <= 30*(2*Math.PI/360))&& (optMerge == true)) {
+					if(Math.abs(cornerRotation.get(i)) <= 30*(2*Math.PI/360)) {
 						mergeLines = true;
-						if(cornerRotation.get(i)< Math.abs(cornerRotation.get(mergeId))) {
+						if(Math.abs(cornerRotation.get(i))< Math.abs(cornerRotation.get(mergeId))) {
 							mergeId = i;
 						}
 					}
 				}
 			}
-			if(mergeLines == true) {
+			if((mergeLines == true)&& (optMerge == true)) {
 				for(int j = 0; j<lines.length; j++) {
 					if(lines[j] == (int)regLines.get(mergeId)[3]) {
 					lines[j] = 	(int)regLines.get((mergeId+1)%regLines.size())[3];
@@ -324,7 +326,7 @@ class shape extends zone{
 				rotCI = 0;
 				if (Math.abs(rotation[id]) < tol) {rotC = 0;}
 				else {
-					for(int k = 1;k <= lineTol;k++) {
+					for(int k = 0;k <= lineTol;k++) {
 						rotCI = rotCI + (rotCI + rotation[(id+k)%lines.length]);
 					}
 					rotCI = rotCI/(lineTol+1);
@@ -519,5 +521,4 @@ class shape extends zone{
 			return new Coordinates(xCoord,yCoord);
 		}
 }	
-		
 		

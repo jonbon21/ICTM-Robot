@@ -2,7 +2,7 @@ package shaperecognition;
 
 import java.util.ArrayList;
 
-public class scan {
+class scan {
 	private int[][] map = new int[0][0];
 	private int dimX = 0;
 	private int dimY = 0;
