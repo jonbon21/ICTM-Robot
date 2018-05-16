@@ -282,7 +282,7 @@ class shape extends zone{
 				for(int i = 0; i<cornerRotation.size(); i++) {
 					if((Math.abs(cornerRotation.get(i)) <= 30*(2*Math.PI/360))&& (optMerge == true)) {
 						mergeLines = true;
-						if(cornerRotation.get(i)< cornerRotation.get(mergeId)) {
+						if(cornerRotation.get(i)< Math.abs(cornerRotation.get(mergeId))) {
 							mergeId = i;
 						}
 					}

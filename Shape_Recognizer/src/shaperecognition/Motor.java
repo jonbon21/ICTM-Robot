@@ -24,10 +24,9 @@ public class Motor extends EV3LargeRegulatedMotor {
 		super(inpPort);
 		motorName = inpMotorName;
 		degreesPerActUnit = inpDegreesPerActUnit;
-		//homingSpeed = (int) (inpHomingSpeed*mmToDegreesConversion); //  degrees/s
 	}
 	
-	public double getConversion() {
+	public double getDegreesPerActUnit() {
 		return degreesPerActUnit;
 	}
 

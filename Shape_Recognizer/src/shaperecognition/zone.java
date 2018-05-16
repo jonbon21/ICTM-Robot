@@ -48,6 +48,7 @@ public class zone {
 		coordZone.addAll(A.getCoordZone());
 	}
 	public void fillHoles(int dimX, int dimY) {
+		int counter = 0;
 		int[][] M = this.getArrayZone(dimX, dimY);
 		int[][] bX = new int[dimY][2]; 
 		int[][] bY = new int[dimX][2];
@@ -72,10 +73,12 @@ public class zone {
 				if(M[i][j] == 0) {
 					if(((i > bX[j][0]) && (i < bX[j][1])) && ((j > bY[i][0]) && (j < bY[i][1]))) {
 						this.addEl(new Coordinates(i,j));
+						counter++;
 					}
 				}
 			}
 		}
+		if(counter >= 3) {System.out.println("object with holes");}
 	}
 } 
 

@@ -32,10 +32,15 @@ public class ShapeRecognition {
 
 		
 	//***MAP INIT	
+		//medium square: 130-130, steps of 7mm
+		//medium triangle: 120-120, steps of 7mm
+		//medium semi-circle: 120-120, steps of 3mm
+		//medium cross: 120-120, steps of 3mm
 		
-		int pixelDimensionInMM = 10;					//defines a square pixel of x by x
-		double maxDistanceXInMM = 150.0; 			//maximum x and y-length of physical matrix [in mm]
-		double maxDistanceYInMM = 130.0;
+		
+		int pixelDimensionInMM = 5;					//defines a square pixel of x by x
+		double maxDistanceXInMM = 160.0; 			//maximum x and y-length of physical matrix [in mm]
+		double maxDistanceYInMM = 150.0;
 		double maxDistanceZInMM = 35.0;
 		
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
@@ -124,13 +129,14 @@ public class ShapeRecognition {
 		
 		System.out.println("Scanheight is SET");
 		
-		map.scan(motorX, motorY, sensor1, eindeloopX);   
+		map.scanMultithread(motorX, motorY, sensor1, eindeloopX);   
 		motorZ.rotateTo(0); 
 		
 		
 	//***SHAPE IDENTIFICATION Routine
 		lcd.clear();
 		lcd.refresh();
+		System.out.println();
 		System.out.println("Press any key to start identification");
 		Button.waitForAnyPress();		
 		
@@ -213,7 +219,7 @@ public class ShapeRecognition {
 		
 		
 		sensor1.setFloodLight(true);
-		map.track(motorX, motorY, corners);
+		map.trackEdge(motorX, motorY, corners);
 		sensor1.setFloodLight(false);
 		
 		switch (shape) {       //triangle = -x direction, square = +x, plus-sign = y)
