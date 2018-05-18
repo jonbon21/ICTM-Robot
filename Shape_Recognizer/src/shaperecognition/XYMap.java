@@ -62,16 +62,21 @@ public class XYMap {
 			}
 			Thread contScanning = new Thread() {
 				public void run() {
-					while(motorX.getTachoCount()<=390) { // xtacho net iets kleiner dan de maxX afstand zetten!
-					Delay.msDelay(25);
-					if(sensor.getColorID()== ObjectColor) {
-					scanline.add(1);
-					System.out.print(1);
-					}
-					else {
-					scanline.add(0);
-					System.out.print(0);
-					}	
+					while(true){ //infinite loop
+						try {
+							Thread.sleep(50); //set delay in ms!
+						} catch (InterruptedException ex) {
+							return;	//end execution
+						}
+						//Delay.msDelay(25);
+						if(sensor.getColorID()== ObjectColor) {
+						scanline.add(1);
+						System.out.print(1);
+						}
+						else {
+						scanline.add(0);
+						System.out.print(0);
+						}	
 					}
 			}	
 			};
@@ -87,24 +92,18 @@ public class XYMap {
 			motorY.goTo(i, 4);
 			Delay.msDelay(100);
 			System.out.println();
-				contMoving.start();
-				contScanning.start();
+			
+			contMoving.start();
+			contScanning.start();				
 				try {
-					contScanning.join();
+					contMoving.join(); // wait until contMoving is done
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-				try {
-					contMoving.join();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}			
+			contScanning.interrupt(); //interupt contScanning
 			scan.add(scanline);
 			//System.out.println("test: " +scan.get(i).get(2));
-			//scanline.clear();
 		}						
 		
 		//END SCANNING

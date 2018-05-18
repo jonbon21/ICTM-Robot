@@ -246,7 +246,7 @@ class shape extends zone{
 	}
 	public void calcLineRot(boolean optMerge, int dimX, int dimY) {
 		boolean mergeLines = true; int mergeId = 0; 
-		ArrayList <double[]> regLines = new ArrayList<double[]>(); int mm = 0;
+		ArrayList <double[]> regLines = new ArrayList<double[]>(); 
 		while(mergeLines == true) {
 			for(int i = 0; i<lines.length; i++) {
 				if( Math.abs(lines[(i+1)%lines.length]-lines[i%lines.length]) > 0.5 ){
@@ -271,11 +271,13 @@ class shape extends zone{
 			mergeLines = false; mergeId = 0; 
 			if(optMerge == true) {
 			for(int i = 0; i<regLines.size(); i++) {
+				System.out.println("allLines: "+regLines.get(i)[3]);
+				System.out.println("allLines size: "+regLines.get(i)[4]);
 				if((int)regLines.get(i)[4]<= 2) {
 					mergeLines = true;
-					if((int)regLines.get(i)[4]< (int)regLines.get(mergeId)[4]) {
+					System.out.println("found " + regLines.get(i)[3]);
+					if(regLines.get(i)[4]< regLines.get(mergeId)[4]) {
 						mergeId = i;
-
 					}
 				}
 			}
@@ -323,11 +325,13 @@ class shape extends zone{
 		for (int i = 0; i < 2*lines.length+nI ; i++) {
 			id = i % lines.length;
 			if (newLine == 1) {
-				rotCI = 0;
 				if (Math.abs(rotation[id]) < tol) {rotC = 0;}
 				else {
-					for(int k = 0;k <= lineTol;k++) {
-						rotCI = rotCI + (rotCI + rotation[(id+k)%lines.length]);
+					rotCI = 0;
+					for(int j = 1;j <= lineTol;j++) {
+						for(int k = 1;k <= j;k++) { //UPDATE
+						rotCI = rotCI +  rotation[(id+k)%lines.length]; //rotCI
+						}
 					}
 					rotCI = rotCI/(lineTol+1);
 					rotC = - Math.signum(rotCI) * Math.round(Math.abs(rotCI)/(Math.PI/4)) * (Math.PI/4);
@@ -335,12 +339,14 @@ class shape extends zone{
 				//System.out.println("rotC: " +rotC);
 				idLine++;
 				lines[id] = idLine;
+				System.out.println("lineId: " + idLine);
 				newLine = 0;
 				if(idLine == 3 ) {nI = id;};
 			}
 			else if ( (newLine == 0) && (Math.abs(rotC + rotation[id]) <  tol) ) {
 				lines[id] = idLine;
 				rotC = 0;
+				System.out.println("lineId: " + idLine);
 			}
 			else if ((newLine == 0) && ((rotC + rotation[id]) != 0)) {
 				rotC = rotC + rotation[id];
@@ -350,11 +356,13 @@ class shape extends zone{
 					if ((( (rotCF) <=0) && (rotC>0)) ||
 						(( (rotCF) >=0) && (rotC<0))) {
 						lines[id] = idLine;
+						System.out.println("lineId: " + idLine);
 						break;
 					}
 					else if(j == lineTol){
 						newLine = 1;
 						lines[id] = idLine;
+						System.out.println("lineId: " + idLine);
 					}
 				}
 			}
@@ -370,54 +378,83 @@ class shape extends zone{
 		int xc_new = start.getX(); int xc_old = -1; int xc_old2 = -1;
 		int yc_new = start.getY(); int yc_old = -1; int yc_old2 = -1;
 		int val_new = -1; int val_old = -1; 
-		int stop = 0; int found = 0;
-		int k = 0; int count = 0; 
+		int stop = 0; boolean found = false;
+		int count = 0; boolean newBP = true;
+		ArrayList<Coordinates> bPoints = new ArrayList<Coordinates>();
 		int[][] W = this.getArrayZone(dimX,dimY);
 		while (stop == 0) {
-			k = 0; found = 0; 
 			val_new = -1; val_old = -1;
-			while (found == 0) {
-				val_new = W[xc_new+xn[k]][yc_new+yn[k]];
-				//System.out.println("x: "+(xc_new+xn[k]) +" y: " +(yc_new+yn[k]));
-				//System.out.println("val_new: " + val_new + " val_old: " +val_old);
+			bPoints.clear();
+			for(int k = 0;k<xn.length;k++) {
+			val_new = W[xc_new+xn[k]][yc_new+yn[k]];
 				if(val_new == 0 && val_old == 1) {
-					if ((xc_new+xn[k-1] != xc_old || yc_new+yn[k-1] != yc_old) && (xc_new+xn[k-1] != xc_old2 || yc_new+yn[k-1] != yc_old2)) {
-						xc_old2 = xc_old; yc_old2 = yc_old;
-						xc_old = xc_new; yc_old = yc_new;
-						xc_new = xc_new+xn[k-1];
-						yc_new = yc_new+yn[k-1];
-						boundary.add(new Coordinates(xc_new,yc_new));
-						found = 1;
-					}
+					//if ((xc_new+xn[k-1] != xc_old || yc_new+yn[k-1] != yc_old) && (xc_new+xn[k-1] != xc_old2 || yc_new+yn[k-1] != yc_old2)) {
+					//	xc_old2 = xc_old; yc_old2 = yc_old;
+					//	xc_old = xc_new; yc_old = yc_new;
+					//	xc_new = xc_new+xn[k-1];
+					//	yc_new = yc_new+yn[k-1];
+					//	boundary.add(new Coordinates(xc_new,yc_new));
+					bPoints.add(new Coordinates(xc_new+xn[k-1],yc_new+yn[k-1]));
 				}
 				if(val_old == 0 && val_new == 1) {
-					if ((xc_new+xn[k] != xc_old || yc_new+yn[k] != yc_old) && (xc_new+xn[k] != xc_old2 || yc_new+yn[k] != yc_old2)) {
-						xc_old2 = xc_old; yc_old2 = yc_old;
-						xc_old = xc_new; yc_old = yc_new;
-						xc_new = xc_new+xn[k];
-						yc_new = yc_new+yn[k];
-						boundary.add(new Coordinates(xc_new,yc_new));
-						found = 1;
+					//if ((xc_new+xn[k] != xc_old || yc_new+yn[k] != yc_old) && (xc_new+xn[k] != xc_old2 || yc_new+yn[k] != yc_old2)) {
+					//	xc_old2 = xc_old; yc_old2 = yc_old;
+					//	xc_old = xc_new; yc_old = yc_new;
+					//	xc_new = xc_new+xn[k];
+					//	yc_new = yc_new+yn[k];
+					//	boundary.add(new Coordinates(xc_new,yc_new));
+					bPoints.add(new Coordinates(xc_new+xn[k],yc_new+yn[k]));	
+				}
+			val_old = val_new;
+			}
+			if (count > 5) {
+				for(int i=0;i<bPoints.size();i++) {
+					if (bPoints.get(i).getX() == start.getX() && bPoints.get(i).getY() == start.getY()) {
+					stop = 1;
+					System.out.println("stopflag");
 					}
 				}
-				//System.out.println("ycold: " +yc_old+ " xcold: "+xc_old);
-				//System.out.println("ycold2: " +yc_old2+ " xcold2: "+xc_old2);
-				val_old = val_new;
-				k++;
-				if (k >= xn.length){
-					System.out.println("no boundary point or open boundary");
-					stop = 1; break;
-				}
 			}
-			if (xc_new == start.getX() && yc_new == start.getY()) {
-				stop = 1;
-				boundary.remove(boundary.size()-1);
-			}
-			if (count > 500) {
-				System.out.println("Boundary: total number of scanpoinnts exceeded");
+			//System.out.println("bpointsSize: "+bPoints.size());
+			if(stop == 0) {
+				for(int i=0;i<bPoints.size();i++) {
+					newBP = true;
+					//System.out.println("check" + Math.min(15, boundary.size()-1));
+					for(int j= boundary.size()-1;j>=Math.max(0, boundary.size()-15) ;j--) {
+						if(bPoints.get(i).getX() == boundary.get(j).getX() && bPoints.get(i).getY() == boundary.get(j).getY()) {
+							newBP = false;
+						}
+					}
+				if(newBP ==  true) {
+				boundary.add(new Coordinates(bPoints.get(i).getX(),bPoints.get(i).getY()));
+				xc_new = bPoints.get(i).getX();
+				yc_new = bPoints.get(i).getY();
+				//System.out.println("xnew: " +xc_new+ "ynew: "+yc_new);
 				break;
 				}
-			count++;
+				}
+			}
+			if(newBP == false && stop == 0) {
+				int oldestId =0, bPointsId = 0;
+				for(int i=0;i<bPoints.size();i++) {
+					for(int j= boundary.size()-1;j>=Math.max(0, boundary.size()-15) ;j--) {
+						if(bPoints.get(i).getX() == boundary.get(j).getX() && bPoints.get(i).getY() == boundary.get(j).getY()) {
+							if(j>oldestId) {
+								oldestId = j;
+								bPointsId = i;
+							}
+						}
+					}
+				}
+				boundary.add(new Coordinates(bPoints.get(bPointsId).getX(),bPoints.get(bPointsId).getY()));
+				xc_new = bPoints.get(bPointsId).getX();
+				yc_new = bPoints.get(bPointsId).getY();
+			}
+			if (count > 100) {
+			System.out.println("Boundary: total number of scanpoinnts exceeded");
+			break;
+			}
+		count++;
 		}
 	}
 	public double[] linearRegression(int lineIdFirst, int lineIdLast) {
@@ -425,13 +462,15 @@ class shape extends zone{
 	    	double intercept, slope; double[] res = new double[5]; 
 	    	int[] x,y; int nPoints = 0; //double meanDir = 0;
 	    	res[3] = lines[lineIdLast];
-	    	if ((lineIdLast + this.getBoundEl() - lineIdFirst) > this.getBoundEl()) {
+	    	if ((lineIdLast + this.getBoundEl() - lineIdFirst) >= this.getBoundEl()) { //Update
 	    		nPoints = lineIdLast - lineIdFirst + 1;
 	    	}
 	    	else
 	    	{
 	    		nPoints = this.getBoundEl() + lineIdLast - lineIdFirst + 1;
 	    	}
+	    	//System.out.println("number of points " + nPoints+ " lineId: "+res[3]);
+	    	//System.out.println("lineIdFirst " + lineIdFirst+ " lineIdLast: "+lineIdLast);
 	    	x = new int[nPoints]; y = new int[nPoints];
 	    	for(int i=0;i<nPoints;i++) {
 	    		x[i]= boundary.get((lineIdFirst+i)%this.getBoundEl()).getX();
