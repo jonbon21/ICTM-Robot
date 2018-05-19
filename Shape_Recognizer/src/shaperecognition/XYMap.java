@@ -62,13 +62,13 @@ public class XYMap {
 			}
 			Thread contScanning = new Thread() {
 				public void run() {
-					while(true){ //infinite loop
+					while(motorX.getTachoCount()<=390){ //set tachoCount
 						try {
-							Thread.sleep(50); //set delay in ms!
+							Thread.sleep(50); //set delay between two consecutive measurementsin ms!
+							//Delay.msDelay(25);
 						} catch (InterruptedException ex) {
 							return;	//end execution
 						}
-						//Delay.msDelay(25);
 						if(sensor.getColorID()== ObjectColor) {
 						scanline.add(1);
 						System.out.print(1);

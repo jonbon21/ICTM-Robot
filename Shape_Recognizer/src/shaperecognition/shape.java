@@ -209,16 +209,17 @@ class shape extends zone{
 		    		}
 		        	cornerA = corner.get(idMax);
 		        	cornerB = corner.get((idMax+1)%corner.size());
+
 		        	xMid = (cornerA.getX() + cornerB.getX())/2;
 		        	yMid = (cornerA.getY() + cornerB.getY())/2;
 		        	radius = Math.sqrt(Math.pow(yMid - cornerB.getY(), 2) + Math.pow(xMid - cornerB.getX(), 2));
 		        	for (int i=0;i<corner.size();i++) {
-		    			if((i != idMax)&&(i != idMax+1)) {
+		    			if((i != idMax)&&(i != (idMax+1)%corner.size())) {
 		    				idQ = i;
 		    				break;
 		    			}
 		    		}
-		        	cornerBNewX = cornerB.getX()-xMid; 	cornerBNewY = cornerB.getY()-yMid;
+		        	cornerBNewX = cornerB.getX()-xMid; 	cornerBNewY = cornerB.getY()-yMid;    	
 		        	pQnewX = corner.get(idQ).getX()-xMid; pQnewY = corner.get(idQ).getY()-yMid;
 		        	pQOrientation = cornerBNewX*pQnewY - cornerBNewY*pQnewX;
 		        	corner.clear();
@@ -271,11 +272,8 @@ class shape extends zone{
 			mergeLines = false; mergeId = 0; 
 			if(optMerge == true) {
 			for(int i = 0; i<regLines.size(); i++) {
-				System.out.println("allLines: "+regLines.get(i)[3]);
-				System.out.println("allLines size: "+regLines.get(i)[4]);
 				if((int)regLines.get(i)[4]<= 2) {
 					mergeLines = true;
-					System.out.println("found " + regLines.get(i)[3]);
 					if(regLines.get(i)[4]< regLines.get(mergeId)[4]) {
 						mergeId = i;
 					}
@@ -296,8 +294,8 @@ class shape extends zone{
 				for(int j = 0; j<lines.length; j++) {
 					if(lines[j] == (int)regLines.get(mergeId)[3]) {
 					lines[j] = 	(int)regLines.get((mergeId+1)%regLines.size())[3];
-					System.out.println("mergLine: "+(int)regLines.get((mergeId)%regLines.size())[3]);
-					System.out.println("mergLine: "+(int)regLines.get((mergeId+1)%regLines.size())[3]);
+					//System.out.println("mergLine: "+(int)regLines.get((mergeId)%regLines.size())[3]);
+					//System.out.println("mergLine: "+(int)regLines.get((mergeId+1)%regLines.size())[3]);
 					}	
 				}
 				lineLastPointId.clear();
@@ -339,14 +337,12 @@ class shape extends zone{
 				//System.out.println("rotC: " +rotC);
 				idLine++;
 				lines[id] = idLine;
-				System.out.println("lineId: " + idLine);
 				newLine = 0;
 				if(idLine == 3 ) {nI = id;};
 			}
 			else if ( (newLine == 0) && (Math.abs(rotC + rotation[id]) <  tol) ) {
 				lines[id] = idLine;
 				rotC = 0;
-				System.out.println("lineId: " + idLine);
 			}
 			else if ((newLine == 0) && ((rotC + rotation[id]) != 0)) {
 				rotC = rotC + rotation[id];
@@ -356,13 +352,11 @@ class shape extends zone{
 					if ((( (rotCF) <=0) && (rotC>0)) ||
 						(( (rotCF) >=0) && (rotC<0))) {
 						lines[id] = idLine;
-						System.out.println("lineId: " + idLine);
 						break;
 					}
 					else if(j == lineTol){
 						newLine = 1;
 						lines[id] = idLine;
-						System.out.println("lineId: " + idLine);
 					}
 				}
 			}
@@ -411,7 +405,6 @@ class shape extends zone{
 				for(int i=0;i<bPoints.size();i++) {
 					if (bPoints.get(i).getX() == start.getX() && bPoints.get(i).getY() == start.getY()) {
 					stop = 1;
-					System.out.println("stopflag");
 					}
 				}
 			}
@@ -450,7 +443,7 @@ class shape extends zone{
 				xc_new = bPoints.get(bPointsId).getX();
 				yc_new = bPoints.get(bPointsId).getY();
 			}
-			if (count > 100) {
+			if (count > 1000) {
 			System.out.println("Boundary: total number of scanpoinnts exceeded");
 			break;
 			}
@@ -560,4 +553,3 @@ class shape extends zone{
 			return new Coordinates(xCoord,yCoord);
 		}
 }	
-		
