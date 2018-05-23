@@ -1,6 +1,8 @@
 package shaperecognition;
 
 class Coordinates {
+	//This class defines a point by its coordinates
+	//This class also includes a method to calculate the distance (getDist) and the angle (getAngle) between 2 points
     private int X;
     private int Y;
     

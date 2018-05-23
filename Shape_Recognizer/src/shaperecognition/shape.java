@@ -2,6 +2,19 @@ package shaperecognition;
 
 import java.util.ArrayList;
 class shape extends zone{
+	//This class defines the shape of a given zone (therefore it extends the class zone).
+	//main methods:
+	//1)findBoundPoint: searches the first point of the boundary
+	//2)findBound: determines the boundary of the zone, the boundary points are stored in the list boundary
+	//3)direction: calculates the orientation of the boundary vectors; a boundary vector is defined based on two consecutive points. The result is stored in direction.
+	//4)rotation: calculates the rotation between two consecutive boundary vectors. The result is stored in rotation.
+	//5)calcLines: assigns a line number to each point in the boundary, based on a line tolerance. The result is stored in lines
+	//6)linearRegression: fits a straight line to all points assigned to a given line number. this method is applied in the method calcLineRot.
+	//7)calcCornerRotReg: calculates the angle between two consecutive regression lines. The result is stored in cornerRotation. This method is applied in the method calcLineRot.
+	//8)calcCornerReg: calculates the Coordinates of the intersection between two consecutive lines. The result is stored in corner. This method is applied in the method calcLineRot.
+	//9)calcLineRot: This method method implements the methods linearRegression, calcCornerReg and calcCornerReg. This method optionally merges lines that fall within certain criteria.
+	//10)internalAngleCorner: this method calculates the interior angles for the given shape
+	//11)determineShape: this method determines the shape of the object based on certain boundary characteristics. In case of a semi-circle we calculate a certain number of equally spaced points on the curved line. 
 	private ArrayList<Coordinates> boundary = new ArrayList<Coordinates>();
 	private double [] direction = new double[0]; 
 	private double [] rotation = new double[0];
@@ -527,7 +540,7 @@ class shape extends zone{
 	        res[0] = intercept; res[1] = slope;
 	        return res;
 	    }
-		public double calcCornerRotReg(double[] lineA, double[] lineB) {
+	public double calcCornerRotReg(double[] lineA, double[] lineB) {
 			double res = 0, angleA = 0, angleB = 0;
 			if(lineA[1] >= 0) {angleA = Math.atan(lineA[1])+(lineA[2]-1)*Math.PI/2;}
 			else {angleA = Math.atan(lineA[1]) + Math.PI/2 +(lineA[2]-1)*Math.PI/2;}
@@ -538,7 +551,7 @@ class shape extends zone{
 			if (res >   Math.PI) { res -= 2*Math.PI;}
 			return res;
 		}
-		public Coordinates calcCornerReg(double[] lineA, double[] lineB, int dimX, int dimY) {
+	public Coordinates calcCornerReg(double[] lineA, double[] lineB, int dimX, int dimY) {
 			int xCoord = 0, yCoord = 0; double xSec =0, ySec = 0;
 			xSec = (lineB[0]-lineA[0])/(lineA[1]-lineB[1]);
 			ySec = lineA[0] + lineA[1]*xSec;

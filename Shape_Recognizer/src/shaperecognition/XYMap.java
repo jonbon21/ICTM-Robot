@@ -64,7 +64,7 @@ public class XYMap {
 				public void run() {
 					while(motorX.getTachoCount()<=700){ //set tachoCount
 						try {
-							Thread.sleep(25); //set delay between two consecutive measurementsin ms!
+							Thread.sleep(25); //set delay between two consecutive measurements in ms!
 							//Delay.msDelay(25);
 						} catch (InterruptedException ex) {
 							return;	//end execution
@@ -110,29 +110,20 @@ public class XYMap {
 		System.out.println();
 		Sound.beepSequence(); 
 		
+		//compress the scanned data into the matrix XYmap. The matrix XYmap serves as input for the class scan 
 		double nSample = 0; double avgRes = 0;
 		for(int i=0; i<yResolution; i++) {
-			//System.out.println("size: " +scan.get(i).size());
-			//System.out.println("xResolution: " +xResolution);
 			nSample = (double) scan.get(i).size()/xResolution;
-			//System.out.println("nsample:" +nSample);
 			for(int j=0;j<xResolution;j++) {
 				for(int k=(int) Math.floor(j*nSample);k < (int) Math.ceil((j+1)*nSample-0.1);k++) {
-					//System.out.println("counter: "+ j);
-					//System.out.println("maxindex: " + Math.ceil((j+1)*nSample));
 					if(k == (int) Math.floor(j*nSample)) {
 					avgRes += scan.get(i).get(k) * (Math.ceil(j*nSample+0.001)-j*nSample);} 
-					//System.out.println("floor: " +(Math.ceil(j*nSample+0.001)-j*nSample));}
 					else if(k == (int) Math.ceil((j+1)*nSample) -1) {
 					avgRes += scan.get(i).get(k) * ((j+1)*nSample - Math.floor((j+1)*nSample-0.001));
-					//System.out.println("ceil: " +((j+1)*nSample - Math.floor((j+1)*nSample-0.001)));
 					}
 					else {avgRes += scan.get(i).get(k);}
 				}
-			//System.out.println("val: " + avgRes);
-			//System.out.println("noemer: " +nSample);
 			avgRes = avgRes / nSample;
-			//System.out.println(avgRes);
 			xyMap[j][i] = (int) Math.round(avgRes);
 			avgRes = 0;
 			}	

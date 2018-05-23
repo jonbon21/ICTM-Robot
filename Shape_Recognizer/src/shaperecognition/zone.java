@@ -2,14 +2,16 @@ package shaperecognition;
 
 import java.util.ArrayList;
 class zone {
+	//class that defines a zone of coloured points. A zone is defined as a set of points that have at least one neighbour
+	//above, below, left or right.
+	//main methods:
+	//1) addEl: add element or point to a zone 
+	//2) merge: merge two zones into one 
+	//3) fillHoles: fill gaps within a zone 
 	protected int zoneNr = 0;
 	protected ArrayList<Coordinates> coordZone = new ArrayList<Coordinates>();
 	public zone() {
 	}
-	/*public int compare(zone a, zone b)
-	    {
-	        return a.getZoneEl() - b.getZoneEl();
-	    }*/
 	public zone(Coordinates P) {
 		coordZone.add(P);
 	}
@@ -47,6 +49,7 @@ class zone {
 		coordZone.addAll(A.getCoordZone());
 	}
 	public void fillHoles(int dimX, int dimY) {
+		//method to fill gaps in within the boundaries of the zone
 		int gapsize = 0;
 		int[][] M = this.getArrayZone(dimX, dimY);
 		int[][] bX = new int[dimY][2]; 

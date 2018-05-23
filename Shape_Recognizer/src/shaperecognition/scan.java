@@ -3,6 +3,10 @@ package shaperecognition;
 import java.util.ArrayList;
 
 class scan {
+	//This class processes the scanned matrix.
+	//main methods:
+	//1)prepare: This method sets the first and last column/row equal to zero. This is necessary for the method 'findZones' to work properly.
+	//2)findzones: This method searches all zones (zones are objects of the class zone) in the scanned matrix and stores these zones in a list.
 	private int[][] map = new int[0][0];
 	private int dimX = 0;
 	private int dimY = 0;
