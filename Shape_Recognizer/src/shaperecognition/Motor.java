@@ -11,6 +11,11 @@ import lejos.utility.Delay;
 
 import java.lang.Math.*;
 
+// This class drives the motors.
+// Contains a homing routine (with and without touch sensor)
+// And a GoTo routine which receives a command in real-world values (e.g. mm or pixels)
+// and converts it to degrees
+
 
 public class Motor extends EV3LargeRegulatedMotor {
 	Boolean isHomed = false;
@@ -30,7 +35,7 @@ public class Motor extends EV3LargeRegulatedMotor {
 		return degreesPerActUnit;
 	}
 
-	public void home() {
+	public void home() {                                          // Homing for Z axis
 		System.out.println("Homing " + motorName + " in progress");
 		isHomed=false;
 		
@@ -42,7 +47,7 @@ public class Motor extends EV3LargeRegulatedMotor {
 		}
 	}
 	
-	public void home(EV3TouchSensor eindeloop, int offset) {
+	public void home(EV3TouchSensor eindeloop, int offset) {     // Homing for X and Y axes
 		SampleProvider sp = eindeloop.getTouchMode();
 		float[] sample = new float[sp.sampleSize()];
 		isHomed=false;

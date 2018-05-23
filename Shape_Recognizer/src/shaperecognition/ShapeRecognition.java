@@ -18,6 +18,10 @@ import lejos.hardware.port.*;
 import lejos.hardware.motor.*;
 import shaperecognition.library.ColorSensor;
 
+// This is the main class, with a serial execution of the steps:
+// Homing -> Scanning -> Identification -> Edge Tracking -> Sorting
+
+
 public class ShapeRecognition {
 	public static void main(String[] args) {
 	
@@ -38,7 +42,7 @@ public class ShapeRecognition {
 		double maxDistanceYInMM = 150.0;
 		double maxDistanceZInMM = 35.0;
 		
-		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:
+		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ;  
 		int yResolution = (int) maxDistanceYInMM/pixelDimensionInMM;	
 		
 		XYMap map = new XYMap(xResolution, yResolution);
@@ -50,7 +54,7 @@ public class ShapeRecognition {
 		int xAxisCircumferenceDrivingWheel = 80;  //mm
 		int yAxisCircumferenceDrivingWheel = 134; //mm
 		
-		double xAxis_DegreesPerMM = 360.0/xAxisCircumferenceDrivingWheel;
+		double xAxis_DegreesPerMM = 360.0/xAxisCircumferenceDrivingWheel;   //Definition of the conversion constants ('real world' to degrees)
 		double yAxis_DegreesPerMM = 360.0/yAxisCircumferenceDrivingWheel;
 		double zAxis_DegreesPerMM= 100.0/7;	//experimentally measured
 		

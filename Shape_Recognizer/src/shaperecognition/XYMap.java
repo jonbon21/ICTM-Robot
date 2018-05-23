@@ -12,6 +12,9 @@ import lejos.hardware.Sound;
 import java.lang.Math.*;
 
 
+// This class contains the matrix that will be filled with the scanned data
+// It contains methods used for scanning the matrix, edge tracking of the shape and the sorting routines
+
 public class XYMap {
 	int[][] xyMap;
 	public int xResolution;
