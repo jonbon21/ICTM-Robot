@@ -32,15 +32,10 @@ public class ShapeRecognition {
 
 		
 	//***MAP INIT	
-		//medium square: 130-130, steps of 7mm
-		//medium triangle: 120-120, steps of 7mm
-		//medium semi-circle: 120-120, steps of 3mm
-		//medium cross: 120-120, steps of 3mm
 		
-		
-		int pixelDimensionInMM = 2;					//defines a square pixel of x by x
-		double maxDistanceXInMM = 90.0; 			//maximum x and y-length of physical matrix [in mm]
-		double maxDistanceYInMM = 80.0;
+		int pixelDimensionInMM = 8;					//defines a square pixel of x by x
+		double maxDistanceXInMM = 160.0; 			//maximum x and y-length of physical matrix [in mm]
+		double maxDistanceYInMM = 150.0;
 		double maxDistanceZInMM = 35.0;
 		
 		int xResolution = (int) maxDistanceXInMM/pixelDimensionInMM ; 						//set resolution manually:

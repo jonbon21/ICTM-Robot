@@ -62,9 +62,9 @@ public class XYMap {
 			}
 			Thread contScanning = new Thread() {
 				public void run() {
-					while(motorX.getTachoCount()<=390){ //set tachoCount
+					while(motorX.getTachoCount()<=700){ //set tachoCount
 						try {
-							Thread.sleep(50); //set delay between two consecutive measurementsin ms!
+							Thread.sleep(25); //set delay between two consecutive measurementsin ms!
 							//Delay.msDelay(25);
 						} catch (InterruptedException ex) {
 							return;	//end execution
@@ -82,7 +82,7 @@ public class XYMap {
 			};
 			Thread contMoving = new Thread() {
 				public void run() {
-					motorX.goTo(xResolution,10);
+					motorX.goTo(xResolution,6);
 					//System.out.println("Tachocount = " + motorX.getTachoCount());
 					}
 			};
@@ -101,7 +101,7 @@ public class XYMap {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			contScanning.interrupt(); //interupt contScanning
+			contScanning.interrupt(); //interrupt contScanning
 			scan.add(scanline);
 			//System.out.println("test: " +scan.get(i).get(2));
 		}						
